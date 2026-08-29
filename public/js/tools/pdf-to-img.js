@@ -67,49 +67,66 @@ window.Tools.pdfToImg = {
     const scale = parseFloat(document.getElementById('imgDpiSelect')?.value || '2.0');
     const baseName = file.name.replace(/\.[^/.]+$/, "");
 
-    app.updateProgress(10, 'Loading PDF pages...');
-    const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const totalPages = pdf.numPages;
+    let loadingTask = null;
+    let pdf = null;
 
-    const zip = new JSZip();
+    try {
+      app.updateProgress(10, 'Loading PDF pages...');
+      const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
+      loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      pdf = await loadingTask.promise;
+      const totalPages = pdf.numPages;
 
-    for (let i = 1; i <= totalPages; i++) {
-      const progress = Math.round(10 + ((i / totalPages) * 75));
-      app.updateProgress(progress, `Rendering page ${i} of ${totalPages} (${ext.toUpperCase()})...`);
+      const zip = new JSZip();
 
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale });
+      for (let i = 1; i <= totalPages; i++) {
+        const progress = Math.round(10 + ((i / totalPages) * 75));
+        app.updateProgress(progress, `Rendering page ${i} of ${totalPages} (${ext.toUpperCase()})...`);
 
-      const canvas = document.createElement('canvas');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const ctx = canvas.getContext('2d');
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale });
 
-      // White background for JPEG
-      if (ext === 'jpg') {
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+
+        // White background for JPEG
+        if (ext === 'jpg') {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        const blob = await new Promise((res) => canvas.toBlob(res, mimeType, 0.92));
+        zip.file(`${baseName}_page_${i}.${ext}`, blob);
+
+        // Immediate memory release for each rendered canvas and page
+        PDFEngine.releaseCanvas(canvas);
+        try { await page.cleanup?.(); } catch (_) {}
       }
 
-      await page.render({ canvasContext: ctx, viewport }).promise;
+      app.updateProgress(90, 'Packaging into ZIP archive...');
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
 
-      const blob = await new Promise((res) => canvas.toBlob(res, mimeType, 0.92));
-      zip.file(`${baseName}_page_${i}.${ext}`, blob);
+      let zipName = document.getElementById('zipExportName')?.value?.trim() || `${baseName}_images.zip`;
+      if (!zipName.toLowerCase().endsWith('.zip')) zipName += '.zip';
+
+      try { await pdf.cleanup?.(); await pdf.destroy?.(); } catch (_) {}
+      try { await loadingTask.destroy?.(); } catch (_) {}
+
+      app.updateProgress(100, 'Done!');
+      return {
+        data: zipBlob,
+        filename: zipName,
+        mimeType: 'application/zip',
+        summary: `Successfully converted ${totalPages} pages to .${ext} images`
+      };
+    } catch (err) {
+      if (pdf) { try { await pdf.destroy?.(); } catch (_) {} }
+      if (loadingTask) { try { await loadingTask.destroy?.(); } catch (_) {} }
+      throw err;
     }
-
-    app.updateProgress(90, 'Packaging into ZIP archive...');
-    const zipBlob = await zip.generateAsync({ type: 'blob' });
-
-    let zipName = document.getElementById('zipExportName')?.value?.trim() || `${baseName}_images.zip`;
-    if (!zipName.toLowerCase().endsWith('.zip')) zipName += '.zip';
-
-    app.updateProgress(100, 'Done!');
-    return {
-      data: zipBlob,
-      filename: zipName,
-      mimeType: 'application/zip',
-      summary: `Successfully converted ${totalPages} pages to .${ext} images`
-    };
   }
 };
