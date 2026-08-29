@@ -88,6 +88,7 @@ window.Tools.imgToPdf = {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         const pngBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+        PDFEngine.releaseCanvas(canvas);
         const pngBuffer = await pngBlob.arrayBuffer();
         embeddedImage = await pdfDoc.embedPng(pngBuffer);
       }

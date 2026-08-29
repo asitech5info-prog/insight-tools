@@ -123,12 +123,7 @@ window.Tools.bgRemover = {
     const height = canvas.height;
 
     // Sample the corner colors (top-left, top-right, bottom-left, bottom-right) to determine key background color
-    const samplePoints = [
-      0, // Top-Left
-      (width - 1) * 4, // Top-Right
-      ((height - 1) * width) * 4, // Bottom-Left
-      ((height - 1) * width + (width - 1)) * 4 // Bottom-Right
-    ];
+    const samplePoints = [\r\n      0, // Top-Left\r\n      (width - 1) * 4, // Top-Right\r\n      ((height - 1) * width) * 4, // Bottom-Left\r\n      ((height - 1) * width + (width - 1)) * 4 // Bottom-Right\r\n    ];
 
     let bgR = 0, bgG = 0, bgB = 0;
     samplePoints.forEach(idx => {
@@ -193,6 +188,7 @@ window.Tools.bgRemover = {
 
     app.updateProgress(90, 'Rendering final transparent cutout...');
     const resultBlob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+    PDFEngine.releaseCanvas(canvas);
 
     let outName = document.getElementById('bgRemoverFilename')?.value?.trim() || `${file.name.replace(/\.[^/.]+$/, "")}_nobg.png`;
     if (!outName.toLowerCase().endsWith('.png')) outName += '.png';

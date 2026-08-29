@@ -51,62 +51,75 @@ window.Tools.extractText = {
     const file = files[0];
     const includeHeaders = document.getElementById('includePageHeaders')?.checked ?? true;
 
-    app.updateProgress(15, 'Loading PDF text streams...');
-    const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const totalPages = pdf.numPages;
+    let loadingTask = null;
+    let pdf = null;
 
-    let fullText = '';
+    try {
+      const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
+      loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      pdf = await loadingTask.promise;
+      const totalPages = pdf.numPages;
 
-    for (let i = 1; i <= totalPages; i++) {
-      const progress = Math.round(15 + ((i / totalPages) * 75));
-      app.updateProgress(progress, `Extracting text from page ${i} of ${totalPages}...`);
+      let fullText = '';
 
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      
-      if (includeHeaders) {
-        fullText += `\n--- Page ${i} ---\n\n`;
-      }
+      for (let i = 1; i <= totalPages; i++) {
+        const progress = Math.round(15 + ((i / totalPages) * 75));
+        app.updateProgress(progress, `Extracting text from page ${i} of ${totalPages}...`);
 
-      let lastY;
-      let pageText = '';
-      for (const item of textContent.items) {
-        if (lastY !== undefined && Math.abs(item.transform[5] - lastY) > 5) {
-          pageText += '\n';
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        
+        if (includeHeaders) {
+          fullText += `\n--- Page ${i} ---\n\n`;
         }
-        pageText += item.str + ' ';
-        lastY = item.transform[5];
+
+        let lastY;
+        let pageText = '';
+        for (const item of textContent.items) {
+          if (lastY !== undefined && Math.abs(item.transform[5] - lastY) > 5) {
+            pageText += '\n';
+          }
+          pageText += item.str + ' ';
+          lastY = item.transform[5];
+        }
+
+        fullText += pageText.trim() + '\n';
+        try { await page.cleanup?.(); } catch (_) {}
       }
 
-      fullText += pageText.trim() + '\n';
+      // Show extracted text in workspace container
+      const textarea = document.getElementById('extractedTextarea');
+      const textContainer = document.getElementById('textExtractContainer');
+      const filesContainer = document.getElementById('filesContainer');
+      const pagesContainer = document.getElementById('pagesContainer');
+
+      if (textarea && textContainer) {
+        textarea.value = fullText.trim();
+        textContainer.style.display = 'block';
+        if (filesContainer) filesContainer.style.display = 'none';
+        if (pagesContainer) pagesContainer.style.display = 'none';
+      }
+
+      app.updateProgress(95, 'Preparing text file...');
+      const textBlob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+
+      let outName = document.getElementById('textFilename')?.value?.trim() || 'extracted_text.txt';
+      if (!outName.toLowerCase().endsWith('.txt')) outName += '.txt';
+
+      try { await pdf.cleanup?.(); await pdf.destroy?.(); } catch (_) {}
+      try { await loadingTask.destroy?.(); } catch (_) {}
+
+      app.updateProgress(100, 'Done!');
+      return {
+        data: textBlob,
+        filename: outName,
+        mimeType: 'text/plain',
+        summary: `Successfully extracted text from ${totalPages} pages`
+      };
+    } catch (err) {
+      if (pdf) { try { await pdf.destroy?.(); } catch (_) {} }
+      if (loadingTask) { try { await loadingTask.destroy?.(); } catch (_) {} }
+      throw err;
     }
-
-    // Show extracted text in workspace container
-    const textarea = document.getElementById('extractedTextarea');
-    const textContainer = document.getElementById('textExtractContainer');
-    const filesContainer = document.getElementById('filesContainer');
-    const pagesContainer = document.getElementById('pagesContainer');
-
-    if (textarea && textContainer) {
-      textarea.value = fullText.trim();
-      textContainer.style.display = 'block';
-      if (filesContainer) filesContainer.style.display = 'none';
-      if (pagesContainer) pagesContainer.style.display = 'none';
-    }
-
-    app.updateProgress(95, 'Preparing text file...');
-    const textBlob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
-
-    let outName = document.getElementById('textFilename')?.value?.trim() || 'extracted_text.txt';
-    if (!outName.toLowerCase().endsWith('.txt')) outName += '.txt';
-
-    app.updateProgress(100, 'Done!');
-    return {
-      data: textBlob,
-      filename: outName,
-      mimeType: 'text/plain',
-      summary: `Successfully extracted text from ${totalPages} pages`
-    };
   }
 };
