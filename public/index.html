@@ -39,14 +39,9 @@
       <div class="nav-search">
         <i class="fa-solid fa-magnifying-glass nav-search-icon"></i>
         <input type="text" id="toolSearchInput" class="nav-search-input" placeholder="Search PDF & Office tools (Word, Excel, Merge, Split)...">
-        <span class="nav-search-kbd">/</span>
       </div>
 
       <div class="nav-actions">
-        <a href="#render-status" class="btn-render-badge" title="Deployed & Active on Render">
-          <span class="pulse-dot"></span>
-          <span>Render Live</span>
-        </a>
         <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Dark / Light Mode" aria-label="Toggle Theme">
           <i class="fa-solid fa-moon"></i>
         </button>
@@ -100,373 +95,303 @@
           <i class="fa-solid fa-folder-tree"></i> Organize PDF
         </button>
         <button class="filter-tab-btn" data-category="convert">
-          <i class="fa-solid fa-right-left"></i> Convert PDF
+          <i class="fa-solid fa-arrows-rotate"></i> Convert PDF
         </button>
         <button class="filter-tab-btn" data-category="security">
-          <i class="fa-solid fa-lock"></i> Security & Sign
-        </button>
-        <button class="filter-tab-btn" data-category="optimize">
-          <i class="fa-solid fa-sliders"></i> Optimize & Edit
+          <i class="fa-solid fa-shield-halved"></i> Security & Edit
         </button>
       </div>
 
-      <!-- Tools Grid -->
+      <!-- Tools Grid (All 18 Tools) -->
       <div class="tools-grid" id="toolsGrid">
-        
-        <!-- === MICROSOFT OFFICE TOOLS === -->
-        <!-- Word to PDF -->
-        <div class="tool-card" data-tool="word-to-pdf" data-category="office" style="--card-accent: #2563eb; --icon-bg: rgba(37, 99, 235, 0.1); --icon-color: #2563eb;">
-          <div class="tool-icon-wrapper">
+
+        <!-- MS OFFICE SUITE -->
+        <div class="tool-card featured" data-tool="word-to-pdf" data-category="office">
+          <div class="tool-badge hot">Popular</div>
+          <div class="tool-icon-wrapper" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
             <i class="fa-solid fa-file-word"></i>
           </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Word to PDF</h2>
-            <span class="tool-badge popular">Office</span>
-          </div>
-          <p class="tool-desc">Convert Microsoft Word documents (.docx, .doc) into clean, perfectly formatted PDF files.</p>
+          <h3 class="tool-title">Word to PDF</h3>
+          <p class="tool-desc">Convert Microsoft Word documents (.docx) into standard, print-ready PDF files instantly.</p>
           <div class="tool-footer">
-            <span>Convert Word</span>
+            <span class="tool-tag">DOCX → PDF</span>
             <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- PDF to Word -->
-        <div class="tool-card" data-tool="pdf-to-word" data-category="office" style="--card-accent: #3b82f6; --icon-bg: rgba(59, 130, 246, 0.1); --icon-color: #3b82f6;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-file-word"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">PDF to Word</h2>
-            <span class="tool-badge popular">Editable</span>
-          </div>
-          <p class="tool-desc">Convert PDF documents into fully editable Microsoft Word (.docx) documents with preserved text layout.</p>
-          <div class="tool-footer">
-            <span>Convert to Word</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Excel to PDF -->
-        <div class="tool-card" data-tool="excel-to-pdf" data-category="office" style="--card-accent: #16a34a; --icon-bg: rgba(22, 163, 74, 0.1); --icon-color: #16a34a;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-file-excel"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Excel to PDF</h2>
-            <span class="tool-badge new">Spreadsheet</span>
-          </div>
-          <p class="tool-desc">Convert Excel spreadsheets (.xlsx, .xls, .csv) into clean, paginated PDF tables ready for printing.</p>
-          <div class="tool-footer">
-            <span>Convert Excel</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- PDF to Excel -->
-        <div class="tool-card" data-tool="pdf-to-excel" data-category="office" style="--card-accent: #10b981; --icon-bg: rgba(16, 185, 129, 0.1); --icon-color: #10b981;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-file-excel"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">PDF to Excel</h2>
-            <span class="tool-badge">Extract</span>
-          </div>
-          <p class="tool-desc">Extract tabular data and financial tables from PDF into structured Microsoft Excel (.xlsx) workbooks.</p>
-          <div class="tool-footer">
-            <span>Extract to Excel</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- PowerPoint to PDF -->
-        <div class="tool-card" data-tool="ppt-to-pdf" data-category="office" style="--card-accent: #ea580c; --icon-bg: rgba(234, 88, 12, 0.1); --icon-color: #ea580c;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-file-powerpoint"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">PowerPoint to PDF</h2>
-            <span class="tool-badge">Slides</span>
-          </div>
-          <p class="tool-desc">Convert Microsoft PowerPoint (.pptx, .ppt) presentation slides into widescreen landscape PDF documents.</p>
-          <div class="tool-footer">
-            <span>Convert Slides</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- === PDF ORGANIZER & MANIPULATION TOOLS === -->
-        <!-- Merge PDF -->
-        <div class="tool-card" data-tool="merge" data-category="organize" style="--card-accent: #ef4444; --icon-bg: rgba(239, 68, 68, 0.1); --icon-color: #ef4444;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-object-group"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Merge PDF</h2>
-            <span class="tool-badge popular">Popular</span>
-          </div>
-          <p class="tool-desc">Combine multiple PDF files into one unified document in the exact order you want.</p>
-          <div class="tool-footer">
-            <span>Merge Files</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Split PDF -->
-        <div class="tool-card" data-tool="split" data-category="organize" style="--card-accent: #f59e0b; --icon-bg: rgba(245, 158, 11, 0.1); --icon-color: #f59e0b;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-scissors"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Split PDF</h2>
-            <span class="tool-badge">Essential</span>
-          </div>
-          <p class="tool-desc">Separate specific page ranges or extract each page into independent PDF documents.</p>
-          <div class="tool-footer">
-            <span>Split Pages</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Organize PDF -->
-        <div class="tool-card" data-tool="organize" data-category="organize" style="--card-accent: #8b5cf6; --icon-bg: rgba(139, 92, 246, 0.1); --icon-color: #8b5cf6;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-table-cells-large"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Organize PDF</h2>
-            <span class="tool-badge new">Visual</span>
-          </div>
-          <p class="tool-desc">Drag & drop to reorder pages, rotate individual pages, or delete unnecessary sheets.</p>
-          <div class="tool-footer">
-            <span>Organize Pages</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Compress PDF -->
-        <div class="tool-card" data-tool="compress" data-category="optimize" style="--card-accent: #10b981; --icon-bg: rgba(16, 185, 129, 0.1); --icon-color: #10b981;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-file-zipper"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Compress PDF</h2>
-            <span class="tool-badge popular">Popular</span>
-          </div>
-          <p class="tool-desc">Reduce PDF file size while maintaining the best possible visual document quality.</p>
-          <div class="tool-footer">
-            <span>Reduce Size</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- PDF to JPG / Images -->
-        <div class="tool-card" data-tool="pdf-to-img" data-category="convert" style="--card-accent: #06b6d4; --icon-bg: rgba(6, 182, 212, 0.1); --icon-color: #06b6d4;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-file-image"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">PDF to JPG / PNG</h2>
-            <span class="tool-badge">Convert</span>
-          </div>
-          <p class="tool-desc">Extract all pages of a PDF into crisp, high-resolution JPG or PNG image files.</p>
-          <div class="tool-footer">
-            <span>Export Images</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- JPG / Images to PDF -->
-        <div class="tool-card" data-tool="img-to-pdf" data-category="convert" style="--card-accent: #3b82f6; --icon-bg: rgba(59, 130, 246, 0.1); --icon-color: #3b82f6;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-images"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Images to PDF</h2>
-            <span class="tool-badge popular">Popular</span>
-          </div>
-          <p class="tool-desc">Convert JPG, PNG, and WebP pictures into a clean PDF with custom page sizing and margins.</p>
-          <div class="tool-footer">
-            <span>Convert to PDF</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Remove Background -->
-        <div class="tool-card" data-tool="bg-remover" data-category="convert" style="--card-accent: #ec4899; --icon-bg: rgba(236, 72, 153, 0.1); --icon-color: #ec4899;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Remove Background</h2>
-            <span class="tool-badge new">AI / Instant</span>
-          </div>
-          <p class="tool-desc">Remove background from photos and logos instantly. Download high-resolution transparent PNG cutouts 100% free.</p>
-          <div class="tool-footer">
-            <span>Remove Background</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Rotate PDF -->
-        <div class="tool-card" data-tool="rotate" data-category="optimize" style="--card-accent: #ec4899; --icon-bg: rgba(236, 72, 153, 0.1); --icon-color: #ec4899;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-rotate"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Rotate PDF</h2>
-            <span class="tool-badge">Fast</span>
-          </div>
-          <p class="tool-desc">Rotate your PDF pages 90, 180, or 270 degrees in clockwise or counterclockwise directions.</p>
-          <div class="tool-footer">
-            <span>Rotate Pages</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Watermark PDF -->
-        <div class="tool-card" data-tool="watermark" data-category="optimize" style="--card-accent: #6366f1; --icon-bg: rgba(99, 102, 241, 0.1); --icon-color: #6366f1;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-stamp"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Watermark PDF</h2>
-            <span class="tool-badge new">Custom</span>
-          </div>
-          <p class="tool-desc">Stamp text or custom watermarks on your PDF with precise position, opacity, and angle.</p>
-          <div class="tool-footer">
-            <span>Add Stamp</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Page Numbers -->
-        <div class="tool-card" data-tool="page-number" data-category="optimize" style="--card-accent: #14b8a6; --icon-bg: rgba(20, 184, 166, 0.1); --icon-color: #14b8a6;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-arrow-down-1-9"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Page Numbers</h2>
-            <span class="tool-badge">Format</span>
-          </div>
-          <p class="tool-desc">Add customizable page numbering (Page X of Y, headers/footers) to your documents.</p>
-          <div class="tool-footer">
-            <span>Number Pages</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Protect PDF -->
-        <div class="tool-card" data-tool="protect" data-category="security" style="--card-accent: #ef4444; --icon-bg: rgba(239, 68, 68, 0.1); --icon-color: #ef4444;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-shield-virus"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Protect PDF</h2>
-            <span class="tool-badge">Security</span>
-          </div>
-          <p class="tool-desc">Encrypt your PDF with robust password protection to prevent unauthorized access.</p>
-          <div class="tool-footer">
-            <span>Encrypt File</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Unlock PDF -->
-        <div class="tool-card" data-tool="unlock" data-category="security" style="--card-accent: #10b981; --icon-bg: rgba(16, 185, 129, 0.1); --icon-color: #10b981;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-lock-open"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Unlock PDF</h2>
-            <span class="tool-badge">Security</span>
-          </div>
-          <p class="tool-desc">Remove password security restrictions from your password-protected PDF files.</p>
-          <div class="tool-footer">
-            <span>Unlock File</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Sign PDF -->
-        <div class="tool-card" data-tool="sign" data-category="security" style="--card-accent: #8b5cf6; --icon-bg: rgba(139, 92, 246, 0.1); --icon-color: #8b5cf6;">
-          <div class="tool-icon-wrapper">
-            <i class="fa-solid fa-signature"></i>
-          </div>
-          <div class="tool-header">
-            <h2 class="tool-title">Sign PDF</h2>
-            <span class="tool-badge popular">Popular</span>
-          </div>
-          <p class="tool-desc">Draw, type, or upload your signature and place it anywhere on your PDF documents.</p>
-          <div class="tool-footer">
-            <span>Sign Document</span>
-            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-          </div>
-        </div>
-
-        <!-- Extract Text -->
-        <div class="tool-card" data-tool="extract-text" data-category="convert" style="--card-accent: #0ea5e9; --icon-bg: rgba(14, 165, 233, 0.1); --icon-color: #0ea5e9;">
-          <div class="tool-icon-wrapper">
+        <div class="tool-card" data-tool="pdf-to-word" data-category="office">
+          <div class="tool-badge hot">High Accuracy</div>
+          <div class="tool-icon-wrapper" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
             <i class="fa-solid fa-file-lines"></i>
           </div>
-          <div class="tool-header">
-            <h2 class="tool-title">PDF to Text</h2>
-            <span class="tool-badge">OCR Text</span>
-          </div>
-          <p class="tool-desc">Extract selectable text content from your PDF documents with one-click copy and export.</p>
+          <h3 class="tool-title">PDF to Word</h3>
+          <p class="tool-desc">Convert your PDF into editable Microsoft Word (.docx) documents with intact layout.</p>
           <div class="tool-footer">
-            <span>Extract Text</span>
+            <span class="tool-tag">PDF → DOCX</span>
             <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
-      </div>
 
-      <!-- Trust / Feature Badges Section -->
-      <section class="features-section">
-        <div class="section-heading">
-          <h2 class="section-title">The Most Powerful Free PDF & Office Suite</h2>
-          <p class="section-subtitle">Engineered for speed, privacy, and seamless document workflows.</p>
-        </div>
-        <div class="features-grid">
-          <div class="feature-box">
-            <div class="feature-icon"><i class="fa-solid fa-user-shield"></i></div>
-            <h3 class="feature-title">End-to-End Privacy</h3>
-            <p class="feature-desc">Your files are processed directly inside your browser. No documents are uploaded or stored on remote servers.</p>
+        <div class="tool-card" data-tool="excel-to-pdf" data-category="office">
+          <div class="tool-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+            <i class="fa-solid fa-file-excel"></i>
           </div>
-          <div class="feature-box">
-            <div class="feature-icon"><i class="fa-brands fa-microsoft"></i></div>
-            <h3 class="feature-title">MS Office Compatible</h3>
-            <p class="feature-desc">Seamless bidirectional conversions between Microsoft Word, Excel, PowerPoint, and PDF format.</p>
-          </div>
-          <div class="feature-box">
-            <div class="feature-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-            <h3 class="feature-title">Render Cloud Native</h3>
-            <p class="feature-desc">Fully optimized for high availability, zero latency, and one-click cloud deployment on Render.</p>
+          <h3 class="tool-title">Excel to PDF</h3>
+          <p class="tool-desc">Transform Excel spreadsheets (.xlsx, .xls) into clean, auto-scaled PDF table documents.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">XLSX → PDF</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
-      </section>
-    </section>
 
-    <!-- DYNAMIC TOOL WORKSPACE -->
-    <section id="workspaceSection" class="workspace-section">
-      <!-- Workspace Header -->
-      <div class="workspace-header">
-        <button id="btnBackToHome" class="workspace-nav-back">
-          <i class="fa-solid fa-arrow-left"></i>
-          <span>All Tools</span>
-        </button>
-        <div class="workspace-title-group">
-          <div id="wsToolIcon" class="workspace-tool-icon">
+        <div class="tool-card" data-tool="pdf-to-excel" data-category="office">
+          <div class="tool-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+            <i class="fa-solid fa-table"></i>
+          </div>
+          <h3 class="tool-title">PDF to Excel</h3>
+          <p class="tool-desc">Extract tabular data from PDF files directly into editable Excel spreadsheets (.xlsx).</p>
+          <div class="tool-footer">
+            <span class="tool-tag">PDF → XLSX</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="ppt-to-pdf" data-category="office">
+          <div class="tool-icon-wrapper" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
+            <i class="fa-solid fa-file-powerpoint"></i>
+          </div>
+          <h3 class="tool-title">PowerPoint to PDF</h3>
+          <p class="tool-desc">Convert PowerPoint presentations (.pptx) into clean, shareable landscape PDF slides.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">PPTX → PDF</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <!-- ORGANIZE PDF -->
+        <div class="tool-card" data-tool="merge" data-category="organize">
+          <div class="tool-badge hot">Top Pick</div>
+          <div class="tool-icon-wrapper" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
             <i class="fa-solid fa-object-group"></i>
           </div>
-          <div>
-            <h1 id="wsToolTitle" class="workspace-tool-heading">Merge PDF</h1>
-            <p id="wsToolDesc" class="workspace-tool-sub">Combine multiple PDF files into one</p>
+          <h3 class="tool-title">Merge PDF</h3>
+          <p class="tool-desc">Combine multiple PDFs in the exact order you want with fast drag-and-drop merging.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Combine</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
-        <div style="width: 100px;"></div>
+
+        <div class="tool-card" data-tool="split" data-category="organize">
+          <div class="tool-icon-wrapper" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+            <i class="fa-solid fa-scissors"></i>
+          </div>
+          <h3 class="tool-title">Split PDF</h3>
+          <p class="tool-desc">Extract specific page ranges, odd/even pages, or split each page into a separate file.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Separate</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="organize" data-category="organize">
+          <div class="tool-badge new">Visual Grid</div>
+          <div class="tool-icon-wrapper" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
+            <i class="fa-solid fa-grip"></i>
+          </div>
+          <h3 class="tool-title">Organize PDF</h3>
+          <p class="tool-desc">Sort, rotate, and delete PDF pages visually with our interactive sheet canvas grid.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Reorder</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="compress" data-category="convert">
+          <div class="tool-badge hot">High Ratio</div>
+          <div class="tool-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+            <i class="fa-solid fa-compress"></i>
+          </div>
+          <h3 class="tool-title">Compress PDF</h3>
+          <p class="tool-desc">Reduce PDF file size drastically while preserving sharp vector text and high image clarity.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Optimize</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <!-- CONVERT & IMAGES -->
+        <div class="tool-card" data-tool="pdf-to-img" data-category="convert">
+          <div class="tool-icon-wrapper" style="background: rgba(236, 72, 153, 0.12); color: #ec4899;">
+            <i class="fa-solid fa-image"></i>
+          </div>
+          <h3 class="tool-title">PDF to JPG / PNG</h3>
+          <p class="tool-desc">Extract all pages or embedded images from your PDF document into high-resolution JPG or PNG.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Export Images</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="img-to-pdf" data-category="convert">
+          <div class="tool-icon-wrapper" style="background: rgba(6, 182, 212, 0.12); color: #06b6d4;">
+            <i class="fa-solid fa-images"></i>
+          </div>
+          <h3 class="tool-title">Images to PDF</h3>
+          <p class="tool-desc">Convert JPG, PNG, and WebP images into a single clean PDF with custom orientations & margins.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">JPG/PNG → PDF</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="rotate" data-category="organize">
+          <div class="tool-icon-wrapper" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;">
+            <i class="fa-solid fa-rotate-right"></i>
+          </div>
+          <h3 class="tool-title">Rotate PDF</h3>
+          <p class="tool-desc">Rotate your PDF pages 90, 180, or 270 degrees clockwise or counter-clockwise permanently.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Orientation</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="watermark" data-category="security">
+          <div class="tool-icon-wrapper" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+            <i class="fa-solid fa-stamp"></i>
+          </div>
+          <h3 class="tool-title">Watermark PDF</h3>
+          <p class="tool-desc">Stamp custom text or confidential watermarks with custom opacity, typography, and angles.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Brand & Protect</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="page-number" data-category="organize">
+          <div class="tool-icon-wrapper" style="background: rgba(14, 165, 233, 0.12); color: #0ea5e9;">
+            <i class="fa-solid fa-arrow-down-1-9"></i>
+          </div>
+          <h3 class="tool-title">Page Numbers</h3>
+          <p class="tool-desc">Add page numbers into PDF headers or footers with customizable formatting and positions.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Pagination</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <!-- SECURITY & ADVANCED -->
+        <div class="tool-card" data-tool="protect" data-category="security">
+          <div class="tool-icon-wrapper" style="background: rgba(220, 38, 38, 0.12); color: #dc2626;">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <h3 class="tool-title">Protect PDF</h3>
+          <p class="tool-desc">Encrypt your PDF with a strong password to prevent unauthorized viewing and tampering.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">AES Encryption</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="unlock" data-category="security">
+          <div class="tool-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+            <i class="fa-solid fa-lock-open"></i>
+          </div>
+          <h3 class="tool-title">Unlock PDF</h3>
+          <p class="tool-desc">Remove password restrictions and security permissions from your protected PDF documents.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Decrypt</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="sign" data-category="security">
+          <div class="tool-badge hot">E-Signature</div>
+          <div class="tool-icon-wrapper" style="background: rgba(79, 70, 229, 0.12); color: #4f46e5;">
+            <i class="fa-solid fa-signature"></i>
+          </div>
+          <h3 class="tool-title">Sign PDF</h3>
+          <p class="tool-desc">Draw, upload, or place your official electronic signature on any page of your document.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Digital Sign</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card featured" data-tool="bg-remover" data-category="security">
+          <div class="tool-badge new">AI Studio</div>
+          <div class="tool-icon-wrapper" style="background: rgba(168, 85, 247, 0.12); color: #a855f7;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <h3 class="tool-title">Remove Background</h3>
+          <p class="tool-desc">Instantly cutout image and document backgrounds into crisp transparent PNGs right in your browser.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Image Cutout</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="tool-card" data-tool="extract-text" data-category="convert">
+          <div class="tool-icon-wrapper" style="background: rgba(20, 184, 166, 0.12); color: #14b8a6;">
+            <i class="fa-solid fa-align-left"></i>
+          </div>
+          <h3 class="tool-title">PDF to Text</h3>
+          <p class="tool-desc">Extract all raw textual data from your PDF into clean .txt files with structure preserved.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Plain Text</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Step 1: Upload Dropzone -->
+      <!-- Trust & Privacy Feature Showcase -->
+      <div class="features-section">
+        <div class="section-heading">
+          <h2 class="section-title">Built for Speed, Privacy, and Scale</h2>
+          <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Everything you need for seamless document workflows without the bloatware or registration hurdles.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fa-solid fa-shield-virus"></i></div>
+            <h4 class="feature-title">100% Client-Side Privacy</h4>
+            <p class="feature-desc">Your sensitive files are processed directly in your browser using WebAssembly. Files never touch any remote disk.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+            <h4 class="feature-title">Lightning Quick Web Engine</h4>
+            <p class="feature-desc">Powered by modern binary streaming and pdf-lib, transformations complete in milliseconds without queues.</p>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <h4 class="feature-title">Render Cloud Deployment Ready</h4>
+            <p class="feature-desc">Native Docker / Node.js cloud orchestration ready for single-click deployment on Render with health probes.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE VIEW (Active Tool Execution Canvas) -->
+    <section id="workspaceSection" class="workspace-section">
+      <!-- Workspace Top Navigation -->
+      <div class="workspace-header">
+        <div class="workspace-title-group">
+          <button type="button" id="btnBackToHome" class="workspace-nav-back">
+            <i class="fa-solid fa-arrow-left"></i> Back to Tools
+          </button>
+          <div class="workspace-tool-icon" id="wsToolIcon">
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <div>
+            <h2 class="workspace-tool-heading" id="wsToolTitle">Merge PDF</h2>
+            <p class="workspace-tool-sub" id="wsToolDesc">Combine PDF files in the order you want</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1: Upload & Drag Dropzone -->
       <div id="dropzoneContainer" class="dropzone-container">
         <input type="file" id="fileInput" multiple style="display: none;">
         <div class="dropzone-icon-circle">
@@ -531,6 +456,11 @@
         <h2 class="success-title">Your file is ready!</h2>
         <p class="success-desc" id="successDesc">Your document has been processed successfully.</p>
         
+        <div class="privacy-purge-banner" id="privacyPurgeBanner">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span><strong>Zero Data Retention:</strong> All document data & memory buffers are automatically wiped from your browser upon download. No files are ever saved or stored on any server.</span>
+        </div>
+
         <div class="success-actions">
           <button type="button" id="btnDownloadPrimary" class="btn-download-main">
             <i class="fa-solid fa-download"></i>
