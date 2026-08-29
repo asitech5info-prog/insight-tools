@@ -58,22 +58,27 @@ async function uploadFile(file, destinationPath, options = {}) {
     ...(options.contentType ? { contentType: options.contentType } : {})
   };
 
-  const { data, error } = await supabase.storage
-    .from(bucketName)
-    .upload(remotePath, fileBody, uploadOptions);
+  try {
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(remotePath, fileBody, uploadOptions);
 
-  if (error) {
-    throw error;
+    if (error) {
+      throw error;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(remotePath);
+
+    return {
+      data,
+      publicUrl: publicUrlData ? publicUrlData.publicUrl : null
+    };
+  } finally {
+    // Explicitly release file buffer references so GC reclaims memory immediately
+    fileBody = null;
   }
-
-  const { data: publicUrlData } = supabase.storage
-    .from(bucketName)
-    .getPublicUrl(remotePath);
-
-  return {
-    data,
-    publicUrl: publicUrlData ? publicUrlData.publicUrl : null
-  };
 }
 
 module.exports = {

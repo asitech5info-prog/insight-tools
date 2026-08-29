@@ -132,8 +132,8 @@ app.get('/admin', (req, res) => {
 
 // Upload single or multiple files directly to Supabase storage 'uploads' bucket
 app.post(['/api/upload', '/upload'], upload.array('files', 15), async (req, res) => {
+  const files = req.files || (req.file ? [req.file] : []);
   try {
-    const files = req.files || (req.file ? [req.file] : []);
     if (!files || files.length === 0) {
       return res.status(400).json({
         success: false,
@@ -152,7 +152,7 @@ app.post(['/api/upload', '/upload'], upload.array('files', 15), async (req, res)
         upsert: false
       });
 
-      return {
+      const fileSummary = {
         originalName: file.originalname,
         destinationPath: destinationPath,
         size: file.size,
@@ -160,6 +160,11 @@ app.post(['/api/upload', '/upload'], upload.array('files', 15), async (req, res)
         publicUrl: result.publicUrl,
         data: result.data
       };
+
+      // Wipe buffer from memory immediately after upload
+      file.buffer = null;
+
+      return fileSummary;
     });
 
     const uploadedFiles = await Promise.all(uploadPromises);
@@ -175,6 +180,16 @@ app.post(['/api/upload', '/upload'], upload.array('files', 15), async (req, res)
       success: false,
       error: err.message || 'Failed to upload file(s) to Supabase storage.'
     });
+  } finally {
+    // Purge all request buffer references
+    if (req.files && Array.isArray(req.files)) {
+      req.files.forEach(f => { if (f) f.buffer = null; });
+      req.files = null;
+    }
+    if (req.file) {
+      req.file.buffer = null;
+      req.file = null;
+    }
   }
 });
 
@@ -198,17 +213,23 @@ app.post('/api/upload/single', upload.single('file'), async (req, res) => {
       upsert: false
     });
 
+    const fileSummary = {
+      originalName: req.file.originalname,
+      destinationPath: destinationPath,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+      publicUrl: result.publicUrl,
+      data: result.data
+    };
+
+    // Wipe memory buffer immediately
+    req.file.buffer = null;
+    req.file = null;
+
     res.status(200).json({
       success: true,
       message: "Successfully uploaded file directly to Supabase 'uploads' bucket.",
-      file: {
-        originalName: req.file.originalname,
-        destinationPath: destinationPath,
-        size: req.file.size,
-        mimetype: req.file.mimetype,
-        publicUrl: result.publicUrl,
-        data: result.data
-      }
+      file: fileSummary
     });
   } catch (err) {
     console.error('Supabase single upload error:', err);
@@ -216,6 +237,11 @@ app.post('/api/upload/single', upload.single('file'), async (req, res) => {
       success: false,
       error: err.message || 'Failed to upload file to Supabase storage.'
     });
+  } finally {
+    if (req.file) {
+      req.file.buffer = null;
+      req.file = null;
+    }
   }
 });
 
