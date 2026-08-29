@@ -5,10 +5,20 @@ const fs = require('fs');
 const compression = require('compression');
 const cors = require('cors');
 const helmet = require('helmet');
+const multer = require('multer');
+const { uploadFile } = require('./storage');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_KEY = process.env.ADMIN_KEY || 'vape1098';
+
+// Configure Multer with In-Memory Storage (Zero disk retention, direct to Supabase)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 100 * 1024 * 1024 // 100MB file limit
+  }
+});
 
 // In-Memory Telemetry & System Analytics
 const stats = {
@@ -114,6 +124,99 @@ app.get('/', (req, res) => {
 // Dedicated Route: Admin Dashboard
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+/* -------------------------------------------------------------------------- */
+/* Direct Supabase File Upload Routes (Zero Local Disk Retention)             */
+/* -------------------------------------------------------------------------- */
+
+// Upload single or multiple files directly to Supabase storage 'uploads' bucket
+app.post(['/api/upload', '/upload'], upload.array('files', 15), async (req, res) => {
+  try {
+    const files = req.files || (req.file ? [req.file] : []);
+    if (!files || files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No files provided for upload. Send file(s) under "files" or "file" form field.'
+      });
+    }
+
+    const uploadPromises = files.map(async (file) => {
+      const timestamp = Date.now();
+      const sanitizedName = (file.originalname || 'document.pdf').replace(/[^a-zA-Z0-9._-]/g, '_');
+      const destinationPath = `${timestamp}-${sanitizedName}`;
+
+      const result = await uploadFile(file.buffer, destinationPath, {
+        bucket: 'uploads',
+        contentType: file.mimetype,
+        upsert: false
+      });
+
+      return {
+        originalName: file.originalname,
+        destinationPath: destinationPath,
+        size: file.size,
+        mimetype: file.mimetype,
+        publicUrl: result.publicUrl,
+        data: result.data
+      };
+    });
+
+    const uploadedFiles = await Promise.all(uploadPromises);
+
+    res.status(200).json({
+      success: true,
+      message: `Successfully uploaded ${uploadedFiles.length} file(s) directly to Supabase 'uploads' bucket.`,
+      files: uploadedFiles
+    });
+  } catch (err) {
+    console.error('Supabase upload route error:', err);
+    res.status(500).json({
+      success: false,
+      error: err.message || 'Failed to upload file(s) to Supabase storage.'
+    });
+  }
+});
+
+// Single file upload route
+app.post('/api/upload/single', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: 'No file provided. Please send a file in the "file" field.'
+      });
+    }
+
+    const timestamp = Date.now();
+    const sanitizedName = (req.file.originalname || 'document.pdf').replace(/[^a-zA-Z0-9._-]/g, '_');
+    const destinationPath = `${timestamp}-${sanitizedName}`;
+
+    const result = await uploadFile(req.file.buffer, destinationPath, {
+      bucket: 'uploads',
+      contentType: req.file.mimetype,
+      upsert: false
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully uploaded file directly to Supabase 'uploads' bucket.",
+      file: {
+        originalName: req.file.originalname,
+        destinationPath: destinationPath,
+        size: req.file.size,
+        mimetype: req.file.mimetype,
+        publicUrl: result.publicUrl,
+        data: result.data
+      }
+    });
+  } catch (err) {
+    console.error('Supabase single upload error:', err);
+    res.status(500).json({
+      success: false,
+      error: err.message || 'Failed to upload file to Supabase storage.'
+    });
+  }
 });
 
 // Telemetry endpoint: Records anonymous operational metrics (Zero user data retained)
