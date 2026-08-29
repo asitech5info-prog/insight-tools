@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Insight Tools</title>
+  <meta name="description" content="Insight Tools Master Administration & Telemetry Console">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Admin Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- Login Modal / Screen (Visible if not authenticated) -->
+  <div id="adminLoginScreen" class="admin-login-overlay">
+    <div class="admin-login-card">
+      <div class="admin-login-icon">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h2 class="admin-login-title">Admin Access</h2>
+      <p class="admin-login-sub">Enter your security key to access Insight Tools Console</p>
+
+      <form id="adminLoginForm" class="admin-login-form">
+        <div class="form-group" style="text-align: left;">
+          <label class="form-label">Master Admin Password</label>
+          <div style="position: relative;">
+            <input type="password" id="adminPasswordInput" class="form-control" placeholder="Enter security password" required autofocus>
+          </div>
+        </div>
+
+        <button type="submit" id="btnAdminLogin" class="btn-execute-action" style="margin-top: 1rem; width: 100%;">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          <span>Authenticate</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Authenticated Admin Workspace -->
+  <div id="adminApp" class="admin-layout" style="display: none;">
+    <!-- Admin Navbar -->
+    <header class="admin-navbar">
+      <div class="admin-nav-container">
+        <div class="admin-brand">
+          <a href="/" class="brand-logo">
+            <div class="logo-icon"><i class="fa-solid fa-file-pdf"></i></div>
+            <div class="brand-text">Insight<span>Admin</span></div>
+          </a>
+          <span class="admin-env-pill" id="adminRenderBadge">
+            <span class="pulse-dot"></span> Render Live
+          </span>
+        </div>
+
+        <div class="admin-nav-actions">
+          <button id="btnPurgeRAM" class="admin-btn-action" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35); color: #ef4444;" title="Purge RAM cache for Render 512MB Limit">
+            <i class="fa-solid fa-broom-ball"></i>
+            <span>Purge Memory (512MB limit)</span>
+          </button>
+          <button id="btnRefreshStats" class="admin-btn-action" title="Refresh Live Metrics">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>Refresh</span>
+          </button>
+          <a href="/" class="admin-btn-action" title="View Public Website" target="_blank">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>Public Site</span>
+          </a>
+          <button id="btnAdminLogout" class="admin-btn-logout" title="Sign Out">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Admin Container -->
+    <main class="admin-main">
+      
+      <!-- Top Metrics Overview -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div class="metric-info">
+            <div class="metric-label">Total Conversions</div>
+            <div class="metric-value" id="valTotalConversions">0</div>
+            <div class="metric-trend up"><i class="fa-solid fa-arrow-trend-up"></i> Real-time active</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+            <i class="fa-solid fa-hard-drive"></i>
+          </div>
+          <div class="metric-info">
+            <div class="metric-label">Data Processed</div>
+            <div class="metric-value" id="valDataProcessed">0 MB</div>
+            <div class="metric-trend"><i class="fa-solid fa-shield-check"></i> 100% Client-side</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+            <i class="fa-solid fa-cubes-stacked"></i>
+          </div>
+          <div class="metric-info">
+            <div class="metric-label">Active Tools</div>
+            <div class="metric-value" id="valActiveTools">18 / 18</div>
+            <div class="metric-trend"><i class="fa-solid fa-circle-check"></i> All Operational</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #06b6d4;">
+            <i class="fa-solid fa-microchip"></i>
+          </div>
+          <div class="metric-info">
+            <div class="metric-label">Memory Heap Used</div>
+            <div class="metric-value" id="valMemoryHeap">0 MB</div>
+            <div class="metric-trend" id="valUptime">Uptime: 0m</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Column Layout: Tool Manager + System Probes -->
+      <div class="admin-grid-2col">
+        <!-- Left: Tool Control & Toggle Panel -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h3 class="admin-card-title">Tools & Features Management</h3>
+              <p class="admin-card-sub">Enable or temporarily disable specific conversion workflows</p>
+            </div>
+            <span class="badge-count" id="toolCountBadge">18 Tools</span>
+          </div>
+
+          <div class="tools-management-list" id="toolToggleList">
+            <!-- Dynamic tools list rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Right: System Diagnostics & Settings -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h3 class="admin-card-title">Server & Render Health</h3>
+              <p class="admin-card-sub">Live environment diagnostics and platform parameters</p>
+            </div>
+            <span class="status-indicator-badge live">Healthy</span>
+          </div>
+
+          <div class="system-stats-box" id="systemStatsBox">
+            <div class="sys-stat-row">
+              <span class="sys-stat-key"><i class="fa-solid fa-cloud"></i> Hosting Environment</span>
+              <span class="sys-stat-val" id="sysRenderStatus">Render Cloud Ready</span>
+            </div>
+            <div class="sys-stat-row" style="flex-direction: column; align-items: stretch; gap: 0.5rem;">
+              <div style="display: flex; justify-content: space-between;">
+                <span class="sys-stat-key"><i class="fa-solid fa-gauge-high"></i> Render Free Tier RAM (512 MB)</span>
+                <span class="sys-stat-val" id="renderRamUsageText">0 MB / 512 MB</span>
+              </div>
+              <div class="progress-bar-container" style="margin: 0; height: 10px; background: rgba(255,255,255,0.08);">
+                <div id="renderRamBar" class="progress-bar-fill" style="width: 10%; background: linear-gradient(90deg, #10b981, #06b6d4);"></div>
+              </div>
+            </div>
+            <div class="sys-stat-row">
+              <span class="sys-stat-key"><i class="fa-brands fa-node-js"></i> Node.js Runtime</span>
+              <span class="sys-stat-val" id="sysNodeVersion">Node v18+</span>
+            </div>
+            <div class="sys-stat-row">
+              <span class="sys-stat-key"><i class="fa-solid fa-server"></i> Server Platform</span>
+              <span class="sys-stat-val" id="sysPlatform">Linux/Win x64</span>
+            </div>
+            <div class="sys-stat-row">
+              <span class="sys-stat-key"><i class="fa-solid fa-clock"></i> Server Uptime</span>
+              <span class="sys-stat-val" id="sysUptimeText">0 hours</span>
+            </div>
+          </div>
+
+          <!-- Configuration Settings Form -->
+          <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
+            <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Global Configuration</h4>
+            <div class="form-group">
+              <label class="form-label">Max Allowed File Size (MB)</label>
+              <input type="number" id="cfgMaxFileSize" class="form-control" value="100" min="10" max="500">
+            </div>
+            <div class="form-group">
+              <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; cursor: pointer;">
+                <input type="checkbox" id="cfgMaintenance" style="accent-color: var(--primary);">
+                Enable Maintenance Mode
+              </label>
+            </div>
+            <button id="btnSaveConfig" class="btn-tool-sm" style="width: 100%; justify-content: center; padding: 0.65rem; background: var(--primary); color: white;">
+              <i class="fa-solid fa-floppy-disk"></i> Save Configuration
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Operations Audit Log -->
+      <div class="admin-card" style="margin-top: 2rem;">
+        <div class="admin-card-header">
+          <div>
+            <h3 class="admin-card-title">Live Activity & Telemetry Log</h3>
+            <p class="admin-card-sub">Recent document transformations executed by users</p>
+          </div>
+          <button id="btnClearLogs" class="btn-tool-sm"><i class="fa-solid fa-broom"></i> Clear View</button>
+        </div>
+
+        <div class="audit-table-wrapper">
+          <table class="audit-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Tool</th>
+                <th>Document Name</th>
+                <th>Size</th>
+                <th>Execution Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="auditLogsBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Admin Controller Script -->
+  <script src="js/admin.js"></script>
+</body>
+</html>
