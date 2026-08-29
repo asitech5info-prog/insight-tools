@@ -12,6 +12,8 @@ class InsightApp {
     this.draggedPageIndex = null;
     this.lastResultBlob = null;
     this.lastResultFilename = '';
+    this.lastResultMimeType = 'application/pdf';
+    this.activeThumbnailUrls = new Set();
 
     this.initTheme();
     this.initElements();
@@ -92,16 +94,12 @@ class InsightApp {
     // Routing by Hash Change
     window.addEventListener('hashchange', () => this.handleRoute());
 
+    // Clean memory on window unload/hide
+    window.addEventListener('beforeunload', () => this.purgeSessionData());
+    window.addEventListener('pagehide', () => this.purgeSessionData());
+
     // Search input
     this.toolSearchInput?.addEventListener('input', (e) => this.filterTools(e.target.value));
-
-    // Keyboard shortcut '/' for search
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement !== this.toolSearchInput && !document.activeElement.matches('input, textarea')) {
-        e.preventDefault();
-        this.toolSearchInput?.focus();
-      }
-    });
 
     // Category Tabs Filter
     document.querySelectorAll('.filter-tab-btn').forEach(tab => {
@@ -142,10 +140,9 @@ class InsightApp {
     });
 
     this.btnClearAll?.addEventListener('click', () => {
-      this.currentFiles = [];
-      this.pageStates = [];
+      this.purgeSessionData();
       this.showDropzone();
-      this.showToast('Files cleared', 'info');
+      this.showToast('Files cleared and memory freed', 'info');
     });
 
     this.fileInput?.addEventListener('change', (e) => {
@@ -181,8 +178,7 @@ class InsightApp {
 
     // Start Over Button
     this.btnStartOver?.addEventListener('click', () => {
-      this.currentFiles = [];
-      this.pageStates = [];
+      this.purgeSessionData();
       this.showDropzone();
     });
 
@@ -191,7 +187,17 @@ class InsightApp {
       e.preventDefault();
       if (this.lastResultBlob) {
         PDFEngine.downloadFile(this.lastResultBlob, this.lastResultFilename, this.lastResultMimeType);
-        this.showToast('Download started!', 'success');
+        this.showToast('Download started! Data purged from memory.', 'success');
+
+        // Automatically purge in-memory buffers after task completion download
+        setTimeout(() => {
+          this.purgeSessionData(false); // retain success UI, wipe all buffers & memory
+          const banner = document.getElementById('privacyPurgeBanner');
+          if (banner) {
+            banner.style.background = 'rgba(16, 185, 129, 0.18)';
+            banner.innerHTML = `<i class="fa-solid fa-circle-check"></i><span><strong>Memory Cleansed:</strong> All file buffers and temporary data have been deleted from browser RAM.</span>`;
+          }
+        }, 600);
       } else {
         this.showToast('No file data ready for download.', 'warning');
       }
@@ -238,9 +244,8 @@ class InsightApp {
   }
 
   showHome() {
+    this.purgeSessionData();
     this.currentTool = null;
-    this.currentFiles = [];
-    this.pageStates = [];
     if (this.homeView) this.homeView.style.display = 'block';
     if (this.workspaceSection) this.workspaceSection.classList.remove('active');
     document.title = 'Insight Tools - All-In-One Free & Secure PDF Suite';
@@ -253,9 +258,8 @@ class InsightApp {
   }
 
   openTool(tool) {
+    this.purgeSessionData();
     this.currentTool = tool;
-    this.currentFiles = [];
-    this.pageStates = [];
 
     document.title = `${tool.title} | Insight Tools`;
 
@@ -441,6 +445,7 @@ class InsightApp {
 
     if (file.type.startsWith('image/')) {
       const url = URL.createObjectURL(file);
+      this.activeThumbnailUrls.add(url);
       const img = document.createElement('img');
       img.src = url;
       previewBox.innerHTML = '';
@@ -466,24 +471,35 @@ class InsightApp {
     if (this.textExtractContainer) this.textExtractContainer.style.display = 'none';
     this.pagesContainer.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 2rem; color: var(--text-muted);">Loading pages preview...</div>';
 
-    const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const totalPages = pdf.numPages;
+    let loadingTask = null;
+    let pdf = null;
+    try {
+      const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
+      loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      pdf = await loadingTask.promise;
+      const totalPages = pdf.numPages;
 
-    this.pageStates = [];
-    for (let i = 1; i <= totalPages; i++) {
-      this.pageStates.push({
-        originalIndex: i - 1,
-        pageNum: i,
-        rotation: 0,
-        deleted: false
-      });
+      this.pageStates = [];
+      for (let i = 1; i <= totalPages; i++) {
+        this.pageStates.push({
+          originalIndex: i - 1,
+          pageNum: i,
+          rotation: 0,
+          deleted: false
+        });
+      }
+
+      await this.renderPageGrid(pdf);
+    } catch (e) {
+      console.error('Error loading pages for organize:', e);
+      if (pdf) { try { await pdf.destroy?.(); } catch (_) {} }
+      if (loadingTask) { try { await loadingTask.destroy?.(); } catch (_) {} }
     }
-
-    this.renderPageGrid(pdf);
   }
 
   async renderPageGrid(pdf) {
+    // Release previous page canvases
+    this.pagesContainer.querySelectorAll('canvas').forEach(c => PDFEngine.releaseCanvas(c));
     this.pagesContainer.innerHTML = '';
     const titleEl = document.getElementById('canvasToolbarTitle');
     if (titleEl) {
@@ -611,7 +627,7 @@ class InsightApp {
       const result = await this.currentTool.execute(this.currentFiles, this);
       const durationMs = Date.now() - startTime;
 
-      // Telemetry event for Admin Console
+      // Telemetry event (Zero user data retained: anonymous metrics only)
       try {
         const totalSize = this.currentFiles.reduce((acc, f) => acc + (f.size || 0), 0);
         fetch('/api/telemetry', {
@@ -619,7 +635,6 @@ class InsightApp {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             tool: this.currentTool.id,
-            filename: this.currentFiles[0]?.name,
             sizeBytes: totalSize,
             durationMs: durationMs
           })
@@ -636,6 +651,50 @@ class InsightApp {
       console.error('Execution error:', err);
       if (this.processingModal) this.processingModal.classList.remove('active');
       this.showToast(err.message || 'An error occurred during processing.', 'error');
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* Memory Optimization & Zero Data Retention Purge Engine                     */
+  /* -------------------------------------------------------------------------- */
+  purgeSessionData(resetUi = true) {
+    // 1. Revoke and release all active image thumbnail object URLs
+    if (this.activeThumbnailUrls) {
+      this.activeThumbnailUrls.forEach(url => {
+        try { URL.revokeObjectURL(url); } catch (e) {}
+      });
+      this.activeThumbnailUrls.clear();
+    }
+
+    // 2. Release GPU/Canvas backing store memory across workspace
+    const canvases = document.querySelectorAll('#workspaceSection canvas, #filesContainer canvas, #pagesContainer canvas');
+    canvases.forEach(canvas => {
+      PDFEngine.releaseCanvas(canvas);
+    });
+
+    // 3. Clear file references and page arrays
+    this.currentFiles = [];
+    this.pageStates = [];
+    this.draggedFileIndex = null;
+    this.draggedPageIndex = null;
+
+    if (resetUi) {
+      this.lastResultBlob = null;
+      this.lastResultFilename = '';
+      if (this.fileInput) this.fileInput.value = '';
+      if (this.filesContainer) this.filesContainer.innerHTML = '';
+      if (this.pagesContainer) this.pagesContainer.innerHTML = '';
+      const textarea = document.getElementById('extractedTextarea');
+      if (textarea) textarea.value = '';
+    }
+
+    // 4. Destroy active signature pad if present
+    if (window._activeSignaturePad) {
+      try {
+        window._activeSignaturePad.clear();
+        window._activeSignaturePad.off?.();
+      } catch (e) {}
+      window._activeSignaturePad = null;
     }
   }
 

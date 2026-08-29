@@ -65,14 +65,13 @@ const PDFEngine = {
       blob = new Blob([data], { type: mimeType });
     }
 
-    // Direct object URL creation
+    // Direct object URL creation with immediate cleanup
     const blobUrl = URL.createObjectURL(blob);
     const downloadLink = document.createElement('a');
     downloadLink.style.display = 'none';
     downloadLink.href = blobUrl;
     downloadLink.download = filename || 'document.pdf';
     
-    // Append to document, trigger click, and cleanup
     document.body.appendChild(downloadLink);
     downloadLink.click();
 
@@ -81,24 +80,46 @@ const PDFEngine = {
         document.body.removeChild(downloadLink);
       }
       URL.revokeObjectURL(blobUrl);
-    }, 1500);
+    }, 500);
   },
 
   /**
-   * Gets total page count of a PDF file
+   * Releases canvas memory by clearing context and zeroing dimensions
+   */
+  releaseCanvas(canvas) {
+    if (!canvas) return;
+    try {
+      const ctx = canvas.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    } catch (e) {}
+    canvas.width = 0;
+    canvas.height = 0;
+  },
+
+  /**
+   * Gets total page count of a PDF file with resource cleanup
    */
   async getPdfPageCount(arrayBufferOrFile) {
+    let loadingTask = null;
+    let pdf = null;
     try {
       const buffer = arrayBufferOrFile instanceof File ? 
         await this.readFileAsArrayBuffer(arrayBufferOrFile) : arrayBufferOrFile;
-      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
-      return pdf.numPages;
+      loadingTask = pdfjsLib.getDocument({ data: buffer });
+      pdf = await loadingTask.promise;
+      const count = pdf.numPages;
+      try { await pdf.cleanup?.(); await pdf.destroy?.(); } catch (_) {}
+      try { await loadingTask.destroy?.(); } catch (_) {}
+      return count;
     } catch (e) {
+      if (pdf) { try { await pdf.destroy?.(); } catch (_) {} }
+      if (loadingTask) { try { await loadingTask.destroy?.(); } catch (_) {} }
       console.warn('PDF.js count failed, trying PDFLib:', e);
       try {
         const { PDFDocument } = PDFLib;
         const pdfDoc = await PDFDocument.load(arrayBufferOrFile);
-        return pdfDoc.getPageCount();
+        const count = pdfDoc.getPageCount();
+        return count;
       } catch (err) {
         return 1;
       }
@@ -106,15 +127,17 @@ const PDFEngine = {
   },
 
   /**
-   * Renders a specific page of a PDF onto an HTML Canvas element
+   * Renders a specific page of a PDF onto an HTML Canvas element with proper cleanup
    */
   async renderPageToCanvas(arrayBufferOrFile, pageNum, canvas, scale = 0.5) {
+    let loadingTask = null;
+    let pdf = null;
     try {
       const buffer = arrayBufferOrFile instanceof File ? 
         await this.readFileAsArrayBuffer(arrayBufferOrFile) : arrayBufferOrFile;
       
-      const loadingTask = pdfjsLib.getDocument({ data: buffer });
-      const pdf = await loadingTask.promise;
+      loadingTask = pdfjsLib.getDocument({ data: buffer });
+      pdf = await loadingTask.promise;
       const page = await pdf.getPage(pageNum);
       
       const viewport = page.getViewport({ scale });
@@ -127,8 +150,13 @@ const PDFEngine = {
       };
       
       await page.render(renderContext).promise;
+      try { await page.cleanup?.(); } catch (_) {}
+      try { await pdf.cleanup?.(); await pdf.destroy?.(); } catch (_) {}
+      try { await loadingTask.destroy?.(); } catch (_) {}
       return true;
     } catch (err) {
+      if (pdf) { try { await pdf.destroy?.(); } catch (_) {} }
+      if (loadingTask) { try { await loadingTask.destroy?.(); } catch (_) {} }
       console.error(`Error rendering page ${pageNum} to canvas:`, err);
       // Draw fallback text on canvas
       const ctx = canvas.getContext('2d');
