@@ -89,6 +89,12 @@ app.use(cors());
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 // Serve static assets from public/
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0,
@@ -98,6 +104,11 @@ app.use(express.static(path.join(__dirname, 'public'), {
 /* -------------------------------------------------------------------------- */
 /* Dedicated Admin & Public API Routes                                        */
 /* -------------------------------------------------------------------------- */
+
+// Explicit Route: Home Page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Dedicated Route: Admin Dashboard
 app.get('/admin', (req, res) => {
@@ -236,11 +247,13 @@ app.get('/api/info', (req, res) => {
 
 // Fallback for SPA routing
 app.get('*', (req, res) => {
-  if (req.path.startsWith('/admin')) {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-  } else {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  }
+  const targetFile = req.path.startsWith('/admin') ? 'admin.html' : 'index.html';
+  res.sendFile(path.join(__dirname, 'public', targetFile), (err) => {
+    if (err) {
+      console.error(`Error delivering ${targetFile}:`, err);
+      res.status(200).sendFile(path.join(__dirname, 'public', 'index.html'));
+    }
+  });
 });
 
 // Start Server
