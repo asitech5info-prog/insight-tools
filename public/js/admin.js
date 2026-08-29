@@ -46,6 +46,8 @@ class AdminApp {
     this.btnSaveConfig = document.getElementById('btnSaveConfig');
     this.btnClearLogs = document.getElementById('btnClearLogs');
     this.btnPurgeRAM = document.getElementById('btnPurgeRAM');
+    this.btnCleanStorage = document.getElementById('btnCleanStorage');
+    this.btnCleanStorageCard = document.getElementById('btnCleanStorageCard');
 
     this.valTotalConversions = document.getElementById('valTotalConversions');
     this.valDataProcessed = document.getElementById('valDataProcessed');
@@ -61,6 +63,7 @@ class AdminApp {
     this.sysNodeVersion = document.getElementById('sysNodeVersion');
     this.sysPlatform = document.getElementById('sysPlatform');
     this.sysFreeMem = document.getElementById('sysFreeMem');
+    this.sysDiskUsage = document.getElementById('sysDiskUsage');
     this.sysUptimeText = document.getElementById('sysUptimeText');
     this.renderRamBar = document.getElementById('renderRamBar');
     this.renderRamUsageText = document.getElementById('renderRamUsageText');
@@ -82,12 +85,30 @@ class AdminApp {
     });
 
     this.btnPurgeRAM?.addEventListener('click', () => this.purgeMemoryCache());
+    this.btnCleanStorage?.addEventListener('click', () => this.cleanStorage());
+    this.btnCleanStorageCard?.addEventListener('click', () => this.cleanStorage());
 
     this.btnSaveConfig?.addEventListener('click', () => this.saveGlobalConfig());
     this.btnClearLogs?.addEventListener('click', () => {
       if (this.auditLogsBody) this.auditLogsBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Audit log view cleared</td></tr>';
       this.showToast('Log view cleared', 'info');
     });
+  }
+
+  async cleanStorage() {
+    try {
+      this.showToast('Scanning and cleaning server disk storage...', 'info');
+      const res = await fetch('/api/admin/clean-storage', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        this.showToast(data.message, 'success');
+        if (this.sysDiskUsage) {
+          this.sysDiskUsage.textContent = '0.00 MB (Clean)';
+        }
+      }
+    } catch (e) {
+      this.showToast('Failed to clean storage', 'error');
+    }
   }
 
   async purgeMemoryCache() {

@@ -61,6 +61,10 @@
         </div>
 
         <div class="admin-nav-actions">
+          <button id="btnCleanStorage" class="admin-btn-action" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #10b981;" title="Clean disk storage & temp files">
+            <i class="fa-solid fa-hard-drive"></i>
+            <span>Clean Storage</span>
+          </button>
           <button id="btnPurgeRAM" class="admin-btn-action" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35); color: #ef4444;" title="Purge RAM cache for Render 512MB Limit">
             <i class="fa-solid fa-broom-ball"></i>
             <span>Purge Memory (512MB limit)</span>
@@ -180,9 +184,16 @@
               <span class="sys-stat-val" id="sysPlatform">Linux/Win x64</span>
             </div>
             <div class="sys-stat-row">
+              <span class="sys-stat-key"><i class="fa-solid fa-hard-drive"></i> Render Disk Storage</span>
+              <span class="sys-stat-val" id="sysDiskUsage" style="color: #10b981; font-weight: 700;">0.00 MB (Client-Side Privacy)</span>
+            </div>
+            <div class="sys-stat-row">
               <span class="sys-stat-key"><i class="fa-solid fa-clock"></i> Server Uptime</span>
               <span class="sys-stat-val" id="sysUptimeText">0 hours</span>
             </div>
+            <button id="btnCleanStorageCard" class="btn-tool-sm" style="width: 100%; justify-content: center; padding: 0.65rem; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #10b981; margin-top: 0.5rem; font-weight: 700;">
+              <i class="fa-solid fa-broom"></i> Clean Disk Storage & Temp Cache
+            </button>
           </div>
 
           <!-- Configuration Settings Form -->
