@@ -41,10 +41,10 @@ const stats = {
     announcement: ''
   },
   logs: [
-    { id: 1, tool: 'merge', filename: 'report_2026.pdf', size: '4.2 MB', duration: '820ms', status: 'success', timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString() },
-    { id: 2, tool: 'compress', filename: 'presentation.pdf', size: '18.5 MB', duration: '1.4s', status: 'success', timestamp: new Date(Date.now() - 1000 * 60 * 25).toISOString() },
-    { id: 3, tool: 'word-to-pdf', filename: 'contract_draft.docx', size: '1.8 MB', duration: '650ms', status: 'success', timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString() },
-    { id: 4, tool: 'excel-to-pdf', filename: 'q3_finance.xlsx', size: '2.1 MB', duration: '710ms', status: 'success', timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString() }
+    { id: 1, tool: 'merge', itemType: 'Batch Document', size: '4.2 MB', duration: '820ms', status: 'success', timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString() },
+    { id: 2, tool: 'compress', itemType: 'Single Document', size: '18.5 MB', duration: '1.4s', status: 'success', timestamp: new Date(Date.now() - 1000 * 60 * 25).toISOString() },
+    { id: 3, tool: 'word-to-pdf', itemType: 'Office Document', size: '1.8 MB', duration: '650ms', status: 'success', timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString() },
+    { id: 4, tool: 'excel-to-pdf', itemType: 'Spreadsheet', size: '2.1 MB', duration: '710ms', status: 'success', timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString() }
   ]
 };
 
@@ -116,9 +116,9 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// Telemetry endpoint: Records successful operations
+// Telemetry endpoint: Records anonymous operational metrics (Zero user data retained)
 app.post('/api/telemetry', (req, res) => {
-  const { tool, filename, sizeBytes, durationMs } = req.body;
+  const { tool, sizeBytes, durationMs } = req.body;
   if (tool) {
     stats.totalConversions++;
     if (sizeBytes) stats.totalBytesProcessed += Number(sizeBytes);
@@ -127,7 +127,7 @@ app.post('/api/telemetry', (req, res) => {
     const logEntry = {
       id: Date.now(),
       tool: tool,
-      filename: filename || 'document.pdf',
+      itemType: 'Client Stream',
       size: sizeBytes ? `${(sizeBytes / (1024 * 1024)).toFixed(2)} MB` : '1.2 MB',
       duration: durationMs ? `${durationMs}ms` : '450ms',
       status: 'success',
