@@ -152,50 +152,39 @@
   padding: 2rem 1.5rem 4rem;
 }
 
-/* 4 Column Top Metrics */
+/* Metric Cards */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 2rem;
-}
-
-@media (max-width: 1024px) {
-  .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .metrics-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .metric-card {
   background: rgba(17, 24, 39, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.25rem;
   backdrop-filter: blur(12px);
+  transition: transform var(--transition-fast);
+}
+
+.metric-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(99, 102, 241, 0.4);
 }
 
 .metric-icon-box {
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.metric-info {
-  flex: 1;
 }
 
 .metric-label {
@@ -296,9 +285,21 @@
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  max-height: 460px;
+  max-height: 480px;
   overflow-y: auto;
-  padding-right: 0.5rem;
+  padding-right: 0.4rem;
+}
+
+.tools-management-list::-webkit-scrollbar {
+  width: 6px;
+}
+.tools-management-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+}
+.tools-management-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
 }
 
 .tool-mgmt-item,
@@ -307,17 +308,17 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1.1rem;
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
 }
 
 .tool-mgmt-item:hover,
 .tool-item-row:hover {
-  background: rgba(30, 41, 59, 0.95);
+  background: rgba(30, 41, 59, 0.9);
   border-color: rgba(99, 102, 241, 0.4);
-  transform: translateX(3px);
+  transform: translateX(2px);
 }
 
 .tool-mgmt-left,
@@ -329,13 +330,13 @@
 
 .tool-mgmt-icon,
 .tool-cell-icon {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   flex-shrink: 0;
 }
 

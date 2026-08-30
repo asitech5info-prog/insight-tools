@@ -98,49 +98,8 @@ class InsightApp {
     window.addEventListener('beforeunload', () => this.purgeSessionData());
     window.addEventListener('pagehide', () => this.purgeSessionData());
 
-    // Search inputs (Navbar & Hero)
-    this.toolSearchInput?.addEventListener('input', (e) => {
-      this.filterTools(e.target.value);
-      const heroSearch = document.getElementById('heroToolSearch');
-      if (heroSearch && heroSearch.value !== e.target.value) heroSearch.value = e.target.value;
-    });
-
-    const heroSearchInput = document.getElementById('heroToolSearch');
-    heroSearchInput?.addEventListener('input', (e) => {
-      this.filterTools(e.target.value);
-      if (this.toolSearchInput && this.toolSearchInput.value !== e.target.value) {
-        this.toolSearchInput.value = e.target.value;
-      }
-    });
-
-    // Keyboard shortcut '/' to search
-    window.addEventListener('keydown', (e) => {
-      if (e.key === '/' && document.activeElement !== this.toolSearchInput && document.activeElement !== heroSearchInput && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
-        e.preventDefault();
-        const targetSearch = (this.homeView?.style.display !== 'none' && heroSearchInput) ? heroSearchInput : this.toolSearchInput;
-        targetSearch?.focus();
-      }
-    });
-
-    // Quick tag chips in Hero
-    document.querySelectorAll('.quick-tag-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const toolId = chip.getAttribute('data-filter-tag');
-        if (toolId) window.location.hash = `#/${toolId}`;
-      });
-    });
-
-    // FAQ Accordion Toggle
-    document.querySelectorAll('.faq-header').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const item = btn.closest('.faq-item');
-        if (item) {
-          const wasActive = item.classList.contains('active');
-          document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
-          if (!wasActive) item.classList.add('active');
-        }
-      });
-    });
+    // Search input
+    this.toolSearchInput?.addEventListener('input', (e) => this.filterTools(e.target.value));
 
     // Category Tabs Filter
     document.querySelectorAll('.filter-tab-btn').forEach(tab => {
@@ -726,7 +685,7 @@ class InsightApp {
     cards.forEach(card => {
       const title = card.querySelector('.tool-title')?.textContent.toLowerCase() || '';
       const desc = card.querySelector('.tool-desc')?.textContent.toLowerCase() || '';
-      const tag = card.querySelector('.tool-tag')?.textContent.toLowerCase() || '';
+      const tag = card.querySelector('.tool-footer span')?.textContent.toLowerCase() || '';
       if (title.includes(q) || desc.includes(q) || tag.includes(q)) {
         card.style.display = 'flex';
       } else {
