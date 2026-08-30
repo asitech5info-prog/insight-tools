@@ -39,7 +39,7 @@ test.describe('Backend API & Health Endpoints', () => {
 
     // Login endpoint
     const loginRes = await request.post('/api/admin/login', {
-      data: { password: 'InsightAdmin2026!' }
+      data: { password: 'vape1098' }
     });
     expect(loginRes.status()).toBe(200);
     const { token } = await loginRes.json();

@@ -85,6 +85,11 @@ app.use(express.static(path.join(__dirname, 'public'), {
   etag: true
 }));
 
+// Admin panel explicit route aliases
+app.get(['/admin', '/admin/', '/admin.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
 // Periodic Temp Cleanup Routine (Every 30 minutes)
 setInterval(() => {
   cleanTempStorage();
@@ -190,7 +195,7 @@ app.get('/api/config', (req, res) => {
    ADMIN & OPERATIONS APIS
    ========================================================================== */
 
-const ADMIN_SECRET = process.env.ADMIN_PASSWORD || 'InsightAdmin2026!';
+const ADMIN_SECRET = process.env.ADMIN_PASSWORD || 'vape1098';
 
 // Authentication Middleware
 function requireAdminAuth(req, res, next) {

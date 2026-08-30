@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe('Admin Console & Operations Dashboard', () => {
-  const ADMIN_PASS = 'InsightAdmin2026!';
+  const ADMIN_PASS = 'vape1098';
 
   test.beforeEach(async ({ page }) => {
     // Clear admin session
