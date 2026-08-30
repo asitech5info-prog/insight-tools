@@ -13,8 +13,10 @@ function initAdmin() {
   const btnLogout = document.getElementById('btnAdminLogout');
   const btnClearRAM = document.getElementById('btnClearRAM');
   const btnCleanStorage = document.getElementById('btnCleanStorage');
+  const btnCleanStorageCard = document.getElementById('btnCleanStorageCard');
   const btnSaveConfig = document.getElementById('btnSaveConfig');
   const btnRefreshStats = document.getElementById('btnRefreshStats');
+  const btnClearLogs = document.getElementById('btnClearLogs');
 
   // Check existing session
   if (adminToken) {
@@ -26,13 +28,16 @@ function initAdmin() {
   // Handle Login
   loginForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const password = document.getElementById('adminPasswordInput').value;
+    const passwordInput = document.getElementById('adminPasswordInput');
+    const password = passwordInput ? passwordInput.value : '';
     const btn = loginForm.querySelector('button[type="submit"]');
-    const originalText = btn.innerHTML;
+    const originalText = btn ? btn.innerHTML : 'Authenticate';
     
     try {
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
-      btn.disabled = true;
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+        btn.disabled = true;
+      }
 
       const res = await fetch('/api/admin/login', {
         method: 'POST',
@@ -52,8 +57,10 @@ function initAdmin() {
     } catch (err) {
       showToast('Network error during authentication', 'error');
     } finally {
-      btn.innerHTML = originalText;
-      btn.disabled = false;
+      if (btn) {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
     }
   });
 
@@ -89,16 +96,16 @@ function initAdmin() {
   });
 
   // Quick Action: Clean Temp Storage
-  btnCleanStorage?.addEventListener('click', async () => {
+  const triggerStorageClean = async (triggerBtn) => {
     try {
-      btnCleanStorage.disabled = true;
+      if (triggerBtn) triggerBtn.disabled = true;
       const res = await fetch('/api/admin/clean-storage', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${adminToken}` }
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast(`Storage cleaned: ${data.removedFilesCount} files removed (${data.freedMB} MB freed)`, 'success');
+        showToast(`Storage cleaned: ${data.removedFilesCount || 0} files removed (${data.freedMB || 0} MB freed)`, 'success');
         fetchStats();
       } else {
         showToast(data.error || 'Failed to clean storage', 'error');
@@ -106,15 +113,22 @@ function initAdmin() {
     } catch (_) {
       showToast('Network error during storage cleanup', 'error');
     } finally {
-      btnCleanStorage.disabled = false;
+      if (triggerBtn) triggerBtn.disabled = false;
     }
-  });
+  };
+
+  btnCleanStorage?.addEventListener('click', () => triggerStorageClean(btnCleanStorage));
+  btnCleanStorageCard?.addEventListener('click', () => triggerStorageClean(btnCleanStorageCard));
 
   // Save Settings
   btnSaveConfig?.addEventListener('click', async () => {
-    const maxFileSize = parseInt(document.getElementById('cfgMaxFileSize').value, 10);
-    const maintenanceMode = document.getElementById('cfgMaintenanceMode').checked;
-    const announcement = document.getElementById('cfgAnnouncement').value.trim();
+    const maxFileEl = document.getElementById('cfgMaxFileSize');
+    const maintEl = document.getElementById('cfgMaintenanceMode');
+    const annEl = document.getElementById('cfgAnnouncement');
+
+    const maxFileSize = maxFileEl ? parseInt(maxFileEl.value, 10) : 100;
+    const maintenanceMode = maintEl ? maintEl.checked : false;
+    const announcement = annEl ? annEl.value.trim() : '';
 
     try {
       btnSaveConfig.disabled = true;
@@ -150,16 +164,29 @@ function initAdmin() {
     fetchStats();
     showToast('Metrics updated', 'info');
   });
+
+  // Clear Logs UI View
+  btnClearLogs?.addEventListener('click', () => {
+    const auditBody = document.getElementById('auditLogsBody');
+    if (auditBody) {
+      auditBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Audit display cleared. Live events will appear as transformations occur.</td></tr>';
+    }
+    showToast('Audit log view cleared', 'info');
+  });
 }
 
 function showLogin() {
-  document.getElementById('adminLoginScreen').style.display = 'flex';
-  document.getElementById('adminApp').style.display = 'none';
+  const login = document.getElementById('adminLoginScreen');
+  const app = document.getElementById('adminApp');
+  if (login) login.style.display = 'flex';
+  if (app) app.style.display = 'none';
 }
 
 function showDashboard() {
-  document.getElementById('adminLoginScreen').style.display = 'none';
-  document.getElementById('adminApp').style.display = 'block';
+  const login = document.getElementById('adminLoginScreen');
+  const app = document.getElementById('adminApp');
+  if (login) login.style.display = 'none';
+  if (app) app.style.display = 'block';
   fetchStats();
   if (refreshInterval) clearInterval(refreshInterval);
   refreshInterval = setInterval(fetchStats, 10000); // 10s live pulse
@@ -191,14 +218,18 @@ async function fetchStats() {
 
 function renderDashboard(data) {
   // 1. Update Core Metrics
-  document.getElementById('valTotalConversions').textContent = (data.totalConversions || 0).toLocaleString();
-  document.getElementById('valDataProcessed').textContent = formatBytes(data.totalBytesProcessed || 0);
+  const convEl = document.getElementById('valTotalConversions');
+  if (convEl) convEl.textContent = (data.totalConversions || 0).toLocaleString();
+
+  const dataEl = document.getElementById('valDataProcessed');
+  if (dataEl) dataEl.textContent = formatBytes(data.totalBytesProcessed || 0);
 
   if (data.systemInfo) {
     const info = data.systemInfo;
-    document.getElementById('valMemoryHeap').textContent = `${info.heapUsedMB} MB`;
+    const heapEl = document.getElementById('valMemoryHeap');
+    if (heapEl) heapEl.textContent = `${info.heapUsedMB || 0} MB`;
     
-    // RAM Progress bar for Render 512MB
+    // RAM Progress bar
     const ramPercent = info.renderRAMPercent || 15;
     const ramBar = document.getElementById('renderRamBar');
     if (ramBar) {
@@ -213,19 +244,28 @@ function renderDashboard(data) {
     }
     const ramText = document.getElementById('renderRamUsageText');
     if (ramText) {
-      ramText.textContent = `${info.heapUsedMB} MB / 512 MB (${ramPercent}%)`;
+      ramText.textContent = `${info.heapUsedMB || 0} MB / 512 MB (${ramPercent}%)`;
     }
 
-    const mins = Math.floor(info.processUptimeSec / 60);
+    const mins = Math.floor((info.processUptimeSec || 0) / 60);
     const hours = (mins / 60).toFixed(1);
-    document.getElementById('valUptime').textContent = `Uptime: ${mins < 60 ? mins + 'm' : hours + 'h'}`;
-    document.getElementById('sysUptimeText').textContent = `${hours} hours (${mins} mins)`;
-    document.getElementById('sysNodeVersion').textContent = info.nodeVersion;
-    document.getElementById('sysPlatform').textContent = `${info.platform} (${info.arch})`;
-    document.getElementById('sysRenderStatus').textContent = info.renderStatus;
+    const uptimeEl = document.getElementById('valUptime');
+    if (uptimeEl) uptimeEl.textContent = `Uptime: ${mins < 60 ? mins + 'm' : hours + 'h'}`;
+
+    const sysUptime = document.getElementById('sysUptimeText');
+    if (sysUptime) sysUptime.textContent = `${hours} hours (${mins} mins)`;
+
+    const nodeEl = document.getElementById('sysNodeVersion');
+    if (nodeEl) nodeEl.textContent = info.nodeVersion || 'Node.js';
+
+    const platEl = document.getElementById('sysPlatform');
+    if (platEl) platEl.textContent = `${info.platform || 'Server'} (${info.arch || 'x64'})`;
+
+    const statusEl = document.getElementById('sysRenderStatus');
+    if (statusEl) statusEl.textContent = info.renderStatus || 'Operational';
   }
 
-  // 2. Render Tools Toggle List
+  // 2. Render Tools Toggle List (All 23 tools)
   const toolListContainer = document.getElementById('toolToggleList');
   if (toolListContainer && data.toolUsage) {
     toolListContainer.innerHTML = '';
@@ -285,33 +325,36 @@ function renderDashboard(data) {
   const auditBody = document.getElementById('auditLogsBody');
   if (auditBody && data.logs) {
     auditBody.innerHTML = '';
-    data.logs.forEach(log => {
-      const tr = document.createElement('tr');
-      const timeStr = new Date(log.timestamp).toLocaleTimeString();
-      const statusClass = log.status === 'OK' ? 'badge-success' : 'badge-warning';
-      
-      tr.innerHTML = `
-        <td><span style="font-family: monospace; font-size: 0.8rem;">${timeStr}</span></td>
-        <td><strong>${log.action}</strong></td>
-        <td>${log.details}</td>
-        <td><span class="status-badge ${statusClass}">${log.status}</span></td>
-      `;
-      auditBody.appendChild(tr);
-    });
+    if (data.logs.length === 0) {
+      auditBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No recent activities logged yet. Transformations will display here in real-time.</td></tr>';
+    } else {
+      data.logs.forEach(log => {
+        const tr = document.createElement('tr');
+        const timeStr = log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : 'Recent';
+        const statusClass = log.status === 'OK' ? 'badge-success' : 'badge-warning';
+        
+        tr.innerHTML = `
+          <td><span style="font-family: monospace; font-size: 0.8rem;">${timeStr}</span></td>
+          <td><strong>${log.action || 'OPERATION'}</strong></td>
+          <td>${log.details || 'Document processed'}</td>
+          <td><span class="status-badge ${statusClass}">${log.status || 'OK'}</span></td>
+        `;
+        auditBody.appendChild(tr);
+      });
+    }
   }
 
   // 4. Update Config Controls
   if (data.config) {
     const cfg = data.config;
-    if (document.getElementById('cfgMaxFileSize')) {
-      document.getElementById('cfgMaxFileSize').value = cfg.maxFileSizeMB || 100;
-    }
-    if (document.getElementById('cfgMaintenanceMode')) {
-      document.getElementById('cfgMaintenanceMode').checked = !!cfg.maintenanceMode;
-    }
-    if (document.getElementById('cfgAnnouncement')) {
-      document.getElementById('cfgAnnouncement').value = cfg.announcement || '';
-    }
+    const maxFile = document.getElementById('cfgMaxFileSize');
+    if (maxFile) maxFile.value = cfg.maxFileSizeMB || 100;
+    
+    const maint = document.getElementById('cfgMaintenanceMode');
+    if (maint) maint.checked = !!cfg.maintenanceMode;
+
+    const ann = document.getElementById('cfgAnnouncement');
+    if (ann) ann.value = cfg.announcement || '';
   }
 }
 
