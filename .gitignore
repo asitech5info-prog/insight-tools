@@ -1,6 +1,5 @@
-node_modules/
-npm-debug.log
-.DS_Store
-.env
 uploads/
 temp/
+playwright-report/
+test-results/
+test_connection.py
