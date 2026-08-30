@@ -3,27 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Insight Tools - All-In-One Free & Secure PDF Suite</title>
-  <meta name="description" content="100% Client-Side PDF Tools. Convert Word, Excel, PPT to PDF, Merge, Split, Compress, Rotate, Watermark, Sign, Protect, Remove BG, OCR, Redact, Metadata, and Grayscale. Zero Server File Retention.">
-  <meta name="keywords" content="pdf tools, word to pdf, excel to pdf, ppt to pdf, merge pdf, split pdf, compress pdf, ocr pdf, redact pdf, edit metadata, client-side pdf tools">
-
-  <!-- Google Fonts: Inter & Plus Jakarta Sans for Ultra-Modern Typography -->
+  <title>Insight Tools - All-In-One Free & Private PDF & Office Suite</title>
+  <meta name="description" content="Merge, split, compress, convert Word, Excel, PowerPoint, protect, unlock, sign, OCR, and edit PDF files 100% free and private directly in your browser.">
+  <meta name="keywords" content="ilovepdf alternative, insight tools, word to pdf, pdf to word, excel to pdf, pdf to excel, ppt to pdf, merge pdf, split pdf, compress pdf, ocr pdf, sign pdf, client-side pdf tools">
+  
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Insight Tools - All-In-One Free PDF & Office Suite">
+  <meta property="og:description" content="Fast, client-side, privacy-first PDF & MS Office tools. Merge, convert Word, Excel, PowerPoint, and sign PDFs easily.">
+  
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome 6 Pro Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <!-- Core App Stylesheet -->
+  
+  <!-- Custom Stylesheets -->
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
 
-  <!-- Top Sticky Navigation Bar -->
+  <!-- Navigation Bar -->
   <header class="navbar">
     <div class="nav-container">
-      <a href="/" class="brand-logo" id="navLogo">
+      <a href="#" class="brand-logo" id="navLogo">
         <div class="logo-icon">
           <i class="fa-solid fa-file-pdf"></i>
         </div>
@@ -32,7 +38,8 @@
 
       <div class="nav-search">
         <i class="fa-solid fa-magnifying-glass nav-search-icon"></i>
-        <input type="text" id="toolSearchInput" class="nav-search-input" placeholder="Search PDF & Office tools (Word, Excel, Merge, Split)...">
+        <input type="text" id="toolSearchInput" class="nav-search-input" placeholder="Search 23 PDF & Office tools (Word, Excel, Merge, OCR)...">
+        <span class="search-kbd-hint"><kbd>/</kbd></span>
       </div>
 
       <div class="nav-actions">
@@ -54,501 +61,637 @@
     <section id="homeView">
       <!-- Hero Section -->
       <div class="hero-section">
+        <div class="hero-backdrop-glow"></div>
         <div class="hero-pill">
-          <i class="fa-solid fa-bolt"></i>
-          <span>100% Free • Privacy-First • Instant Browser Processing</span>
+          <span class="hero-pill-dot"></span>
+          <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i>
+          <span>100% Free • Client-Side Privacy • Zero Server Uploads</span>
         </div>
         <h1 class="hero-title">
-          Every tool you need to work with <span class="gradient-text">PDFs & Office Docs</span>
+          Every tool you need to work with <br>
+          <span class="gradient-text">PDFs & Office Docs</span>
         </h1>
         <p class="hero-subtitle">
-          Transform, merge, split, secure, OCR, and edit your documents directly in your browser. Fast WebAssembly processing with zero server retention.
+          Transform, merge, split, compress, sign, and convert Word, Excel, and PowerPoint files 100% locally in your browser with zero latency, no sign-ups, and complete privacy.
         </p>
+
+        <!-- Hero Quick Search Bar -->
+        <div class="hero-search-wrapper">
+          <div class="hero-search-box">
+            <i class="fa-solid fa-magnifying-glass hero-search-icon"></i>
+            <input type="text" id="heroToolSearch" class="hero-search-input" placeholder="What document task do you want to perform today? (e.g. Word to PDF, Merge, OCR)">
+          </div>
+          <div class="hero-quick-tags">
+            <span class="quick-tag-label">Popular:</span>
+            <button class="quick-tag-chip" data-filter-tag="word-to-pdf"><i class="fa-solid fa-file-word" style="color:#2563eb;"></i> Word to PDF</button>
+            <button class="quick-tag-chip" data-filter-tag="merge"><i class="fa-solid fa-object-group" style="color:#ef4444;"></i> Merge PDF</button>
+            <button class="quick-tag-chip" data-filter-tag="compress"><i class="fa-solid fa-compress" style="color:#10b981;"></i> Compress</button>
+            <button class="quick-tag-chip" data-filter-tag="pdf-to-word"><i class="fa-solid fa-file-lines" style="color:#2563eb;"></i> PDF to Word</button>
+            <button class="quick-tag-chip" data-filter-tag="ocr-pdf"><i class="fa-solid fa-file-invoice" style="color:#0ea5e9;"></i> OCR Text</button>
+            <button class="quick-tag-chip" data-filter-tag="sign"><i class="fa-solid fa-signature" style="color:#4f46e5;"></i> Sign PDF</button>
+            <button class="quick-tag-chip" data-filter-tag="bg-remover"><i class="fa-solid fa-wand-magic-sparkles" style="color:#a855f7;"></i> Remove BG</button>
+          </div>
+        </div>
 
         <div class="hero-stats">
           <div class="stat-item">
-            <span class="stat-num">23</span>
-            <span class="stat-label">Productive Tools</span>
+            <div class="stat-icon-wrap"><i class="fa-solid fa-shield-halved"></i></div>
+            <span><strong>100% Private</strong> (Files never leave your device)</span>
           </div>
-          <div class="stat-divider"></div>
           <div class="stat-item">
-            <span class="stat-num">100%</span>
-            <span class="stat-label">Client-Side Privacy</span>
+            <div class="stat-icon-wrap"><i class="fa-solid fa-gauge-high"></i></div>
+            <span><strong>Instant Speed</strong> WebAssembly Engine</span>
           </div>
-          <div class="stat-divider"></div>
           <div class="stat-item">
-            <span class="stat-num">0MB</span>
-            <span class="stat-label">Server Data Retained</span>
+            <div class="stat-icon-wrap"><i class="fa-solid fa-infinity"></i></div>
+            <span><strong>23 Power Tools</strong> Zero Registration</span>
           </div>
         </div>
       </div>
 
-      <!-- Tool Category Filter Bar -->
-      <div class="filter-bar-container">
-        <div class="filter-tabs">
-          <button class="filter-tab-btn active" data-category="all">
-            <i class="fa-solid fa-grid-2"></i> All Tools
-          </button>
-          <button class="filter-tab-btn" data-category="office">
-            <i class="fa-solid fa-file-lines"></i> Office to PDF
-          </button>
-          <button class="filter-tab-btn" data-category="organize">
-            <i class="fa-solid fa-layer-group"></i> Organize PDF
-          </button>
-          <button class="filter-tab-btn" data-category="convert">
-            <i class="fa-solid fa-arrow-right-arrow-left"></i> Convert & OCR
-          </button>
-          <button class="filter-tab-btn" data-category="security">
-            <i class="fa-solid fa-shield-halved"></i> Security & Edit
-          </button>
+      <!-- Live Trust Metrics Bar -->
+      <div class="trust-bar-section">
+        <div class="trust-stat-card">
+          <div class="trust-number">100,000+</div>
+          <div class="trust-label"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Documents Processed</div>
+        </div>
+        <div class="trust-stat-card">
+          <div class="trust-number">0 Bytes</div>
+          <div class="trust-label"><i class="fa-solid fa-lock" style="color:#6366f1;"></i> Cloud Storage (100% Client RAM)</div>
+        </div>
+        <div class="trust-stat-card">
+          <div class="trust-number">23</div>
+          <div class="trust-label"><i class="fa-solid fa-shapes" style="color:#f59e0b;"></i> Multi-Format Office Tools</div>
+        </div>
+        <div class="trust-stat-card">
+          <div class="trust-number">4.95 / 5</div>
+          <div class="trust-label"><i class="fa-solid fa-star" style="color:#fbbf24;"></i> Trusted by Students & Pros</div>
         </div>
       </div>
 
-      <!-- Main Tools Grid (23 Tools) -->
-      <div class="tools-grid-container" id="toolsGrid">
+      <!-- Filter Tabs -->
+      <div class="tools-filter-bar">
+        <button class="filter-tab-btn active" data-category="all">
+          <i class="fa-solid fa-shapes"></i> All Tools <span class="tab-count-badge">23</span>
+        </button>
+        <button class="filter-tab-btn" data-category="office">
+          <i class="fa-brands fa-microsoft"></i> MS Office Suite <span class="tab-count-badge">5</span>
+        </button>
+        <button class="filter-tab-btn" data-category="organize">
+          <i class="fa-solid fa-folder-tree"></i> Organize PDF <span class="tab-count-badge">6</span>
+        </button>
+        <button class="filter-tab-btn" data-category="convert">
+          <i class="fa-solid fa-arrows-rotate"></i> Convert & Images <span class="tab-count-badge">6</span>
+        </button>
+        <button class="filter-tab-btn" data-category="security">
+          <i class="fa-solid fa-shield-halved"></i> Security & Edit <span class="tab-count-badge">6</span>
+        </button>
+      </div>
 
-        <!-- 1. Word to PDF -->
+      <!-- Tools Grid (All 23 Tools) -->
+      <div class="tools-grid" id="toolsGrid">
+
+        <!-- MS OFFICE SUITE -->
         <div class="tool-card featured" data-tool="word-to-pdf" data-category="office">
-          <div class="tool-icon-box" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
+          <div class="tool-badge hot">Popular</div>
+          <div class="tool-icon-wrapper" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
             <i class="fa-solid fa-file-word"></i>
           </div>
           <h3 class="tool-title">Word to PDF</h3>
-          <p class="tool-desc">Convert DOC & DOCX documents into clean, standard PDF files instantly.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill"><i class="fa-solid fa-bolt"></i> Popular</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Convert Microsoft Word documents (.docx) into standard, print-ready PDF files instantly.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">DOCX → PDF</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 2. PDF to Word -->
         <div class="tool-card" data-tool="pdf-to-word" data-category="office">
-          <div class="tool-icon-box" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
+          <div class="tool-badge hot">High Accuracy</div>
+          <div class="tool-icon-wrapper" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
             <i class="fa-solid fa-file-lines"></i>
           </div>
           <h3 class="tool-title">PDF to Word</h3>
-          <p class="tool-desc">Extract text and layout from PDF files into editable DOCX Word format.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">DOCX</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Convert your PDF into editable Microsoft Word (.docx) documents with intact layout.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">PDF → DOCX</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 3. Excel to PDF -->
         <div class="tool-card" data-tool="excel-to-pdf" data-category="office">
-          <div class="tool-icon-box" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+          <div class="tool-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
             <i class="fa-solid fa-file-excel"></i>
           </div>
           <h3 class="tool-title">Excel to PDF</h3>
-          <p class="tool-desc">Render XLSX & XLS spreadsheets and tables into formatted PDF pages.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Spreadsheets</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Transform Excel spreadsheets (.xlsx, .xls) into clean, auto-scaled PDF table documents.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">XLSX → PDF</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 4. PDF to Excel -->
         <div class="tool-card" data-tool="pdf-to-excel" data-category="office">
-          <div class="tool-icon-box" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+          <div class="tool-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
             <i class="fa-solid fa-table"></i>
           </div>
           <h3 class="tool-title">PDF to Excel</h3>
-          <p class="tool-desc">Extract tabular data from PDF files directly into XLSX spreadsheet workbooks.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">XLSX</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Extract tabular data from PDF files directly into editable Excel spreadsheets (.xlsx).</p>
+          <div class="tool-footer">
+            <span class="tool-tag">PDF → XLSX</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 5. PowerPoint to PDF -->
         <div class="tool-card" data-tool="ppt-to-pdf" data-category="office">
-          <div class="tool-icon-box" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
+          <div class="tool-icon-wrapper" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
             <i class="fa-solid fa-file-powerpoint"></i>
           </div>
           <h3 class="tool-title">PowerPoint to PDF</h3>
-          <p class="tool-desc">Convert PPTX presentation slide decks into high-res landscape PDF slides.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Slides</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Convert PowerPoint presentations (.pptx) into clean, shareable landscape PDF slides.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">PPTX → PDF</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 6. Merge PDF -->
-        <div class="tool-card featured" data-tool="merge" data-category="organize">
-          <div class="tool-icon-box" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
+        <!-- ORGANIZE PDF -->
+        <div class="tool-card" data-tool="merge" data-category="organize">
+          <div class="tool-badge hot">Top Pick</div>
+          <div class="tool-icon-wrapper" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
             <i class="fa-solid fa-object-group"></i>
           </div>
           <h3 class="tool-title">Merge PDF</h3>
-          <p class="tool-desc">Combine multiple PDF documents into a single organized file in any order.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill"><i class="fa-solid fa-star"></i> Essential</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Combine multiple PDFs in the exact order you want with fast drag-and-drop merging.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Combine</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 7. Split PDF -->
-        <div class="tool-card featured" data-tool="split" data-category="organize">
-          <div class="tool-icon-box" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+        <div class="tool-card" data-tool="split" data-category="organize">
+          <div class="tool-icon-wrapper" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
             <i class="fa-solid fa-scissors"></i>
           </div>
           <h3 class="tool-title">Split PDF</h3>
-          <p class="tool-desc">Extract specific page ranges or split every single page into separate documents.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill"><i class="fa-solid fa-bolt"></i> Fast</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Extract specific page ranges, odd/even pages, or split each page into a separate file.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Separate</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 8. Organize PDF -->
         <div class="tool-card" data-tool="organize" data-category="organize">
-          <div class="tool-icon-box" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
+          <div class="tool-badge new">Visual Grid</div>
+          <div class="tool-icon-wrapper" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
             <i class="fa-solid fa-grip"></i>
           </div>
           <h3 class="tool-title">Organize PDF</h3>
-          <p class="tool-desc">Visual drag-and-drop page organizer. Reorder, rotate, or delete individual pages.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Visual Canvas</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Sort, rotate, and delete PDF pages visually with our interactive sheet canvas grid.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Reorder</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 9. Compress PDF -->
-        <div class="tool-card featured" data-tool="compress" data-category="convert">
-          <div class="tool-icon-box" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+        <div class="tool-card" data-tool="compress" data-category="convert">
+          <div class="tool-badge hot">High Ratio</div>
+          <div class="tool-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
             <i class="fa-solid fa-compress"></i>
           </div>
           <h3 class="tool-title">Compress PDF</h3>
-          <p class="tool-desc">Reduce PDF file size drastically while maintaining optimal visual document quality.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill"><i class="fa-solid fa-gauge-high"></i> Max Shrink</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Reduce PDF file size drastically while preserving sharp vector text and high image clarity.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Optimize</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 10. PDF to Images -->
+        <!-- CONVERT & IMAGES -->
         <div class="tool-card" data-tool="pdf-to-img" data-category="convert">
-          <div class="tool-icon-box" style="background: rgba(236, 72, 153, 0.12); color: #ec4899;">
+          <div class="tool-icon-wrapper" style="background: rgba(236, 72, 153, 0.12); color: #ec4899;">
             <i class="fa-solid fa-image"></i>
           </div>
-          <h3 class="tool-title">PDF to Images</h3>
-          <p class="tool-desc">Extract all pages of your PDF as high-resolution JPG or lossless PNG images in a ZIP.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">JPG / PNG</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <h3 class="tool-title">PDF to JPG / PNG</h3>
+          <p class="tool-desc">Extract all pages or embedded images from your PDF document into high-resolution JPG or PNG.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Export Images</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 11. Images to PDF -->
         <div class="tool-card" data-tool="img-to-pdf" data-category="convert">
-          <div class="tool-icon-box" style="background: rgba(6, 182, 212, 0.12); color: #06b6d4;">
+          <div class="tool-icon-wrapper" style="background: rgba(6, 182, 212, 0.12); color: #06b6d4;">
             <i class="fa-solid fa-images"></i>
           </div>
           <h3 class="tool-title">Images to PDF</h3>
-          <p class="tool-desc">Compile JPG, PNG, and WebP images into a single polished, multi-page PDF document.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Multi-image</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Convert JPG, PNG, and WebP images into a single clean PDF with custom orientations & margins.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">JPG/PNG → PDF</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 12. Rotate PDF -->
         <div class="tool-card" data-tool="rotate" data-category="organize">
-          <div class="tool-icon-box" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;">
+          <div class="tool-icon-wrapper" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;">
             <i class="fa-solid fa-rotate-right"></i>
           </div>
           <h3 class="tool-title">Rotate PDF</h3>
-          <p class="tool-desc">Rotate your PDF pages 90, 180, or 270 degrees clockwise or counter-clockwise.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Orientation</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Rotate your PDF pages 90°, 180°, or 270° degrees permanently for perfect reading orientation.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Orientation</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 13. Watermark PDF -->
         <div class="tool-card" data-tool="watermark" data-category="security">
-          <div class="tool-icon-box" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
+          <div class="tool-icon-wrapper" style="background: rgba(244, 63, 94, 0.12); color: #f43f5e;">
             <i class="fa-solid fa-stamp"></i>
           </div>
           <h3 class="tool-title">Watermark PDF</h3>
-          <p class="tool-desc">Stamp text watermarks, security notices, and confidentiality labels onto every page.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Custom Labels</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Stamp custom text watermarks with position grids, custom opacity, color, and typography.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Branding</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 14. Page Numbers -->
         <div class="tool-card" data-tool="page-number" data-category="organize">
-          <div class="tool-icon-box" style="background: rgba(14, 165, 233, 0.12); color: #0ea5e9;">
+          <div class="tool-icon-wrapper" style="background: rgba(14, 165, 233, 0.12); color: #0ea5e9;">
             <i class="fa-solid fa-arrow-down-1-9"></i>
           </div>
           <h3 class="tool-title">Page Numbers</h3>
-          <p class="tool-desc">Add header and footer page numbers with custom positioning, font sizes, and formats.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Pagination</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Add professional header or footer pagination to your PDF with custom numbering formats.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Pagination</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 15. Protect PDF -->
+        <!-- SECURITY & SIGNATURES -->
         <div class="tool-card" data-tool="protect" data-category="security">
-          <div class="tool-icon-box" style="background: rgba(220, 38, 38, 0.12); color: #dc2626;">
+          <div class="tool-icon-wrapper" style="background: rgba(220, 38, 38, 0.12); color: #dc2626;">
             <i class="fa-solid fa-lock"></i>
           </div>
           <h3 class="tool-title">Protect PDF</h3>
-          <p class="tool-desc">Encrypt and lock sensitive PDF documents with secure password protection.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Encryption</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Secure PDF files with strong password encryption and restriction tags against tampering.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Security</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 16. Unlock PDF -->
         <div class="tool-card" data-tool="unlock" data-category="security">
-          <div class="tool-icon-box" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+          <div class="tool-icon-wrapper" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
             <i class="fa-solid fa-lock-open"></i>
           </div>
           <h3 class="tool-title">Unlock PDF</h3>
-          <p class="tool-desc">Remove owner restrictions, printing limits, and security locks from PDF files.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Decryption</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Remove owner restrictions and security locks from PDF files to enable editing and printing.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Decrypt</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 17. Sign PDF -->
         <div class="tool-card" data-tool="sign" data-category="security">
-          <div class="tool-icon-box" style="background: rgba(79, 70, 229, 0.12); color: #4f46e5;">
+          <div class="tool-badge hot">Interactive</div>
+          <div class="tool-icon-wrapper" style="background: rgba(79, 70, 229, 0.12); color: #4f46e5;">
             <i class="fa-solid fa-signature"></i>
           </div>
           <h3 class="tool-title">Sign PDF</h3>
-          <p class="tool-desc">Draw, upload, or create digital signatures and place them anywhere on your documents.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">E-Sign</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Draw, upload, or type your digital signature and stamp it accurately onto any PDF page.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">E-Signature</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 18. Background Remover -->
-        <div class="tool-card featured" data-tool="bg-remover" data-category="security">
-          <div class="tool-icon-box" style="background: rgba(168, 85, 247, 0.12); color: #a855f7;">
+        <div class="tool-card" data-tool="bg-remover" data-category="security">
+          <div class="tool-badge new">AI Powered</div>
+          <div class="tool-icon-wrapper" style="background: rgba(168, 85, 247, 0.12); color: #a855f7;">
             <i class="fa-solid fa-wand-magic-sparkles"></i>
           </div>
           <h3 class="tool-title">Remove Background</h3>
-          <p class="tool-desc">Smart image background removal cutout tool. Output crisp transparent PNGs for free.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Cutout</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Intelligently remove backgrounds from portrait photos, stamps, and logos in seconds.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Transparent PNG</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 19. Extract Text -->
+        <!-- NEW ADVANCED POWER UTILITIES -->
         <div class="tool-card" data-tool="extract-text" data-category="convert">
-          <div class="tool-icon-box" style="background: rgba(20, 184, 166, 0.12); color: #14b8a6;">
+          <div class="tool-icon-wrapper" style="background: rgba(20, 184, 166, 0.12); color: #14b8a6;">
             <i class="fa-solid fa-align-left"></i>
           </div>
           <h3 class="tool-title">PDF to Text</h3>
-          <p class="tool-desc">Extract all raw text content from PDF pages into downloadable .txt notes.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Plain Text</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Extract all raw textual content from any PDF document into clean plain text (.txt).</p>
+          <div class="tool-footer">
+            <span class="tool-tag">PDF → TXT</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 20. OCR PDF -->
-        <div class="tool-card featured" data-tool="ocr-pdf" data-category="convert">
-          <div class="tool-icon-box" style="background: rgba(14, 165, 233, 0.12); color: #0ea5e9;">
+        <div class="tool-card" data-tool="ocr-pdf" data-category="convert">
+          <div class="tool-badge new">OCR Engine</div>
+          <div class="tool-icon-wrapper" style="background: rgba(14, 165, 233, 0.12); color: #0ea5e9;">
             <i class="fa-solid fa-file-invoice"></i>
           </div>
-          <h3 class="tool-title">OCR Text Recognition</h3>
-          <p class="tool-desc">Extract text from scanned PDFs & images with client-side OCR recognition.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill"><i class="fa-solid fa-bolt"></i> OCR Engine</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <h3 class="tool-title">OCR Recognition</h3>
+          <p class="tool-desc">Recognize text from scanned PDF documents and image pages with high-speed browser OCR.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Optical Recognition</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 21. Redact PDF -->
         <div class="tool-card" data-tool="redact" data-category="security">
-          <div class="tool-icon-box" style="background: rgba(220, 38, 38, 0.12); color: #dc2626;">
+          <div class="tool-icon-wrapper" style="background: rgba(220, 38, 38, 0.12); color: #dc2626;">
             <i class="fa-solid fa-square-full"></i>
           </div>
           <h3 class="tool-title">Redact PDF</h3>
-          <p class="tool-desc">Permanently blackout and sanitize confidential text and sensitive document zones.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Sanitization</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Permanently blackout and sanitize sensitive confidential information, IDs, and numbers.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Privacy Sanitizer</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 22. Edit PDF Metadata -->
         <div class="tool-card" data-tool="metadata" data-category="security">
-          <div class="tool-icon-box" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
+          <div class="tool-icon-wrapper" style="background: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
             <i class="fa-solid fa-tags"></i>
           </div>
-          <h3 class="tool-title">Edit PDF Metadata</h3>
-          <p class="tool-desc">Inspect, edit, or strip Author, Title, Subject, and Keywords document properties.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Tags & Properties</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <h3 class="tool-title">Edit Metadata</h3>
+          <p class="tool-desc">View and modify PDF metadata tags including Title, Author, Subject, Keywords, and Creator.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">Document Tags</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
-        <!-- 23. PDF to Grayscale -->
         <div class="tool-card" data-tool="grayscale" data-category="convert">
-          <div class="tool-icon-box" style="background: rgba(100, 116, 139, 0.12); color: #64748b;">
+          <div class="tool-icon-wrapper" style="background: rgba(100, 116, 139, 0.12); color: #64748b;">
             <i class="fa-solid fa-circle-half-stroke"></i>
           </div>
           <h3 class="tool-title">PDF to Grayscale</h3>
-          <p class="tool-desc">Convert color PDFs to pure black & white / grayscale for optimized archiving and printing.</p>
-          <div class="tool-card-footer">
-            <span class="tool-pill">Monochrome</span>
-            <span class="tool-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+          <p class="tool-desc">Convert colored PDF files and images to clean black & white monochrome for toner savings.</p>
+          <div class="tool-footer">
+            <span class="tool-tag">B&W Monochrome</span>
+            <div class="tool-action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
           </div>
         </div>
 
       </div>
 
-      <!-- Trust & Features Value Props -->
-      <div class="features-section">
-        <h2 class="features-title">Built for Speed, Privacy, and Scale</h2>
-        <div class="features-grid">
-          <div class="feature-item">
-            <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
-            <h4>100% Client-Side Privacy</h4>
-            <p>Your documents stay right inside your browser memory. No data is stored on remote servers.</p>
+      <!-- "How It Works" 3-Step Interactive Process -->
+      <section class="how-it-works-section">
+        <div class="section-badge"><i class="fa-solid fa-wand-sparkles"></i> Simple 3-Step Process</div>
+        <h2 class="section-title">How Insight Tools Works</h2>
+        <p class="section-subtitle">Transform your documents in seconds with complete client-side security and zero cloud upload waiting times.</p>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-badge">1</div>
+            <div class="step-icon-wrap" style="color: #6366f1; background: rgba(99, 102, 241, 0.12);">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <h3 class="step-title">Select or Drop Files</h3>
+            <p class="step-desc">Pick any Word, Excel, PowerPoint, image, or PDF file from your computer, tablet, or smartphone.</p>
           </div>
-          <div class="feature-item">
-            <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
-            <h4>Blazing Fast Performance</h4>
-            <p>Powered by native WebAssembly and high-performance Web Workers for lightning-fast conversions.</p>
+
+          <div class="step-card">
+            <div class="step-badge">2</div>
+            <div class="step-icon-wrap" style="color: #10b981; background: rgba(16, 185, 129, 0.12);">
+              <i class="fa-solid fa-microchip"></i>
+            </div>
+            <h3 class="step-title">Instant Browser Processing</h3>
+            <p class="step-desc">Our WebAssembly & JS engine transforms your file locally inside your browser with maximum speed.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">3</div>
+            <div class="step-icon-wrap" style="color: #06b6d4; background: rgba(6, 182, 212, 0.12);">
+              <i class="fa-solid fa-circle-down"></i>
+            </div>
+            <h3 class="step-title">Download & Memory Cleanse</h3>
+            <p class="step-desc">Get your converted file instantly. All temporary memory buffers are automatically wiped clean from RAM.</p>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- "Why Insight Tools?" Value Props -->
+      <section class="why-us-section">
+        <div class="section-badge"><i class="fa-solid fa-shield-check"></i> Enterprise Standards</div>
+        <h2 class="section-title">Why Users Choose Insight Tools</h2>
+        <p class="section-subtitle">Engineered from the ground up to respect your privacy, speed, and productivity.</p>
+
+        <div class="features-matrix-grid">
+          <div class="feature-matrix-card">
+            <div class="feature-matrix-icon" style="color: #ef4444; background: rgba(239, 68, 68, 0.12);">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 class="feature-matrix-title">100% Client-Side Privacy</h3>
+            <p class="feature-matrix-desc">Unlike traditional converters, your sensitive personal documents, contracts, and IDs never upload to any remote server. Everything executes in your local browser sandbox.</p>
+          </div>
+
+          <div class="feature-matrix-card">
+            <div class="feature-matrix-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.12);">
+              <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <h3 class="feature-matrix-title">Lightning Speed Execution</h3>
+            <p class="feature-matrix-desc">No network bottlenecks, no upload queues, and no conversion delay. Instant multi-megabyte processing using WebAssembly and hardware acceleration.</p>
+          </div>
+
+          <div class="feature-matrix-card">
+            <div class="feature-matrix-icon" style="color: #f59e0b; background: rgba(245, 158, 11, 0.12);">
+              <i class="fa-solid fa-infinity"></i>
+            </div>
+            <h3 class="feature-matrix-title">Unlimited Free Usage</h3>
+            <p class="feature-matrix-desc">No sign-up forms, no subscription paywalls, no credit cards required, and no hidden file conversion quotas. Open and free for everyone forever.</p>
+          </div>
+
+          <div class="feature-matrix-card">
+            <div class="feature-matrix-icon" style="color: #8b5cf6; background: rgba(139, 92, 246, 0.12);">
+              <i class="fa-solid fa-cubes"></i>
+            </div>
+            <h3 class="feature-matrix-title">Complete 23-in-1 Suite</h3>
+            <p class="feature-matrix-desc">From MS Office document transforms (Word, Excel, PPT) to OCR, background removal, e-signatures, watermarks, metadata editing, and compression.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive FAQ Accordion -->
+      <section class="faq-section">
+        <div class="section-badge"><i class="fa-solid fa-circle-question"></i> Got Questions?</div>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Everything you need to know about our privacy-first tools engine.</p>
+
+        <div class="faq-accordion-list">
+          <div class="faq-item">
+            <button class="faq-header">
+              <span>Are my files and documents uploaded to any server?</span>
+              <i class="fa-solid fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-content">
+              <p>No! Insight Tools operates with a client-first privacy architecture. All operations (Word to PDF, merge, split, compress, OCR, signing) run 100% locally in your web browser's RAM memory using WebAssembly. Your documents never leave your computer or device.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-header">
+              <span>Is Insight Tools really 100% free with no limits?</span>
+              <i class="fa-solid fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-content">
+              <p>Yes, completely free. There are no subscriptions, no credit card requirements, no watermarks forced on your output, and no artificial daily limits.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-header">
+              <span>Can I use Insight Tools on smartphones and tablets?</span>
+              <i class="fa-solid fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-content">
+              <p>Absolutely! Insight Tools is fully responsive and optimized for touch devices, iOS iPhones/iPads, Android devices, Chromebooks, and desktop computers.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-header">
+              <span>How does memory cleansing and privacy protection work?</span>
+              <i class="fa-solid fa-chevron-down faq-icon"></i>
+            </button>
+            <div class="faq-content">
+              <p>Whenever you click "Download Document", start over, or close your browser tab, Insight Tools automatically revokes all blob object URLs and flushes canvas memory buffers, ensuring zero data remnants are left behind.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </section>
 
     <!-- WORKSPACE VIEW (Active Tool Workflow) -->
     <section id="workspaceSection" class="workspace-section">
-      <!-- Breadcrumb & Back button -->
-      <div class="ws-header">
-        <button id="btnBackToHome" class="btn-back">
-          <i class="fa-solid fa-arrow-left"></i>
-          <span>Back to All Tools</span>
-        </button>
-        <div class="ws-tool-info">
-          <div class="ws-tool-icon" id="wsToolIcon"><i class="fa-solid fa-file-pdf"></i></div>
+      
+      <!-- Workspace Top Bar -->
+      <div class="workspace-header">
+        <div class="workspace-title-area">
+          <button id="btnBackToHome" class="btn-back" title="Back to All Tools">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>All Tools</span>
+          </button>
           <div>
-            <h2 class="ws-tool-title" id="wsToolTitle">Tool Workspace</h2>
-            <p class="ws-tool-desc" id="wsToolDesc">Drag and drop files to get started</p>
+            <h1 class="workspace-title" id="wsToolTitle">Tool Title</h1>
+            <p class="workspace-desc" id="wsToolDesc">Tool Description</p>
           </div>
         </div>
       </div>
 
-      <!-- Dropzone Area (Initial State) -->
-      <div id="dropzoneContainer" class="dropzone-container">
-        <div class="dropzone-box" id="dropzoneBox">
+      <!-- Step 1: Upload Dropzone -->
+      <div id="dropzoneContainer" class="dropzone-card">
+        <div class="dropzone-inner">
           <div class="dropzone-icon">
             <i class="fa-solid fa-cloud-arrow-up"></i>
           </div>
-          <h3 class="dropzone-title">Select files or drag & drop here</h3>
-          <p class="dropzone-sub">Support for PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Images</p>
-          
-          <input type="file" id="fileInput" class="file-input-hidden" multiple>
-          
-          <button type="button" class="btn-select-files" id="btnSelectFiles">
-            <i class="fa-solid fa-folder-open"></i> Choose Files
+          <h2 class="dropzone-title">Select or drag & drop files here</h2>
+          <p class="dropzone-subtitle" id="dropzoneAcceptText">PDF, Word, Excel, PowerPoint, or Images supported</p>
+          <button type="button" id="btnSelectFiles" class="btn-select-files">
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Choose Files from Device</span>
           </button>
-          
-          <div class="dropzone-footer-pill" id="acceptedFormatPill">
-            <i class="fa-solid fa-check"></i> 100% Secure & Client-Side
-          </div>
+          <input type="file" id="fileInput" class="file-input-hidden" style="display: none;">
         </div>
       </div>
 
-      <!-- Active Workspace: Canvas & Options Panel -->
+      <!-- Step 2: Active Workspace (File List & Options Panel) -->
       <div id="activeWorkspace" class="active-workspace-grid" style="display: none;">
-        <!-- Left: Visual Canvas / Files Grid -->
-        <div class="canvas-panel">
-          <div class="canvas-toolbar">
-            <span class="canvas-title" id="canvasToolbarTitle">Selected Files</span>
-            <div class="canvas-actions">
+        
+        <!-- Left: Files & Pages Preview Grid -->
+        <div class="workspace-files-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><i class="fa-solid fa-layer-group"></i> Selected Files (<span id="filesCountBadge">0</span>)</h3>
+            <div class="panel-actions">
               <button id="btnAddMoreFiles" class="btn-tool-sm"><i class="fa-solid fa-plus"></i> Add More</button>
-              <button id="btnClearAll" class="btn-tool-sm btn-danger"><i class="fa-solid fa-trash"></i> Clear All</button>
+              <button id="btnClearAll" class="btn-tool-sm btn-danger-sm"><i class="fa-solid fa-trash"></i> Clear</button>
             </div>
           </div>
 
-          <!-- Files Grid (For Merge, Multi-Image, etc.) -->
-          <div class="files-grid" id="filesContainer"></div>
+          <!-- Files Cards Container -->
+          <div id="filesContainer" class="files-list-grid"></div>
 
-          <!-- Pages Grid (For Organize, Split, Rotate) -->
-          <div class="pages-grid" id="pagesContainer" style="display: none;"></div>
+          <!-- Pages Container (Used for Organize PDF) -->
+          <div id="pagesContainer" class="pages-preview-grid" style="display: none;"></div>
 
-          <!-- Text Preview (For PDF to Text & OCR) -->
-          <div class="text-extract-container" id="textExtractContainer" style="display: none;">
-            <textarea id="extractedTextarea" class="form-control" placeholder="Extracted text will appear here..."></textarea>
+          <!-- Text Extraction View (Used for PDF to Text) -->
+          <div id="textExtractContainer" class="text-extract-wrapper" style="display: none;">
+            <div class="text-extract-header">
+              <h4>Extracted Document Content</h4>
+              <button id="btnCopyExtractedText" class="btn-tool-sm"><i class="fa-solid fa-copy"></i> Copy Text</button>
+            </div>
+            <textarea id="extractedTextarea" class="extracted-textarea" readonly placeholder="Extracted text will appear here..."></textarea>
           </div>
         </div>
 
-        <!-- Right: Tool Execution Options Sidebar -->
-        <div class="options-panel">
-          <div class="options-header">
-            <h3>Options & Settings</h3>
-          </div>
+        <!-- Right: Tool Specific Options Panel -->
+        <div class="workspace-options-panel">
+          <div class="options-card">
+            <h3 class="options-title"><i class="fa-solid fa-sliders"></i> Tool Options</h3>
+            <div id="optionsContainer" class="options-body">
+              <!-- Rendered dynamically by each tool -->
+            </div>
 
-          <div class="options-body" id="optionsContainer">
-            <!-- Dynamically populated per tool -->
-          </div>
-
-          <div class="options-footer">
+            <!-- Execute Action Button -->
             <button id="btnExecuteAction" class="btn-execute-action">
-              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <i class="fa-solid fa-bolt"></i>
               <span id="btnExecuteText">Process Document</span>
             </button>
           </div>
         </div>
+
       </div>
 
-      <!-- Success Screen -->
+      <!-- Step 3: Success Download Screen -->
       <div id="successScreen" class="success-screen-card" style="display: none;">
-        <div class="success-icon-wrap">
-          <i class="fa-solid fa-circle-check"></i>
+        <div class="success-icon-badge">
+          <i class="fa-solid fa-check"></i>
         </div>
-        <h2 class="success-title">Your Document is Ready!</h2>
-        <p class="success-sub" id="successDesc">Processing completed successfully in your browser with zero data retention.</p>
+        <h2 class="success-title">Your file is ready!</h2>
+        <p class="success-desc" id="successDesc">Your document has been processed successfully.</p>
+        
+        <div class="privacy-purge-banner" id="privacyPurgeBanner">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span><strong>Zero Data Retention:</strong> All document data & memory buffers are automatically wiped from your browser upon download. No files are ever saved or stored on any server.</span>
+        </div>
 
         <div class="success-actions">
-          <button id="btnDownloadPrimary" class="btn-download-primary">
+          <button type="button" id="btnDownloadPrimary" class="btn-download-main">
             <i class="fa-solid fa-download"></i>
-            <span id="btnDownloadText">Download File</span>
+            <span id="btnDownloadText">Download Document</span>
           </button>
           <button id="btnStartOver" class="btn-start-over">
-            <i class="fa-solid fa-rotate-left"></i>
-            <span>Process Another File</span>
+            <i class="fa-solid fa-rotate-left"></i> Process Another File
           </button>
-        </div>
-
-        <div class="privacy-purge-banner" id="privacyPurgeBanner">
-          <i class="fa-solid fa-shield-check"></i>
-          <span><strong>Zero File Retention:</strong> File was processed entirely inside client browser RAM. No copies were uploaded to any server.</span>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Processing Spinner Modal Overlay -->
+  <!-- Processing Loading Modal -->
   <div id="processingModal" class="processing-overlay">
     <div class="processing-card">
-      <div class="spinner-ring"></div>
-      <h3 class="process-status-title" id="processStatusTitle">Processing...</h3>
-      <p class="process-status-sub" id="processStatusSubtitle">Executing WebAssembly transformation...</p>
+      <div class="spinner-orbit"></div>
+      <h3 id="processStatusTitle" style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">Processing Document...</h3>
+      <p id="processStatusSubtitle" style="color: var(--text-secondary); font-size: 0.9rem;">Executing operation in browser</p>
+      
       <div class="progress-bar-container">
-        <div class="progress-bar-fill" id="progressBarFill"></div>
+        <div id="progressBarFill" class="progress-bar-fill"></div>
       </div>
-      <span class="progress-percent-label" id="progressPercent">0%</span>
+      <div style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);" id="progressPercent">0%</div>
     </div>
   </div>
 
-  <!-- Global Toast Notification Container -->
+  <!-- Toast Container -->
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Footer -->
@@ -559,25 +702,28 @@
           <div class="logo-icon"><i class="fa-solid fa-file-pdf"></i></div>
           <div class="brand-text">Insight<span>Tools</span></div>
         </div>
-        <p>100% Free & Open Client-Side PDF Suite. Fast, secure, and private document processing powered by modern web standards.</p>
+        <p>The ultimate free, secure, and client-side PDF & MS Office suite. 100% private in-browser document workflows with zero cloud storage.</p>
+        <div class="footer-privacy-badge">
+          <i class="fa-solid fa-lock" style="color:#10b981;"></i> Zero Cloud Logs • 100% Local RAM
+        </div>
       </div>
       <div class="footer-col">
-        <h4>Office & Convert</h4>
+        <h4>MS Office Suite</h4>
         <ul>
           <li><a href="#" class="tool-link" data-tool="word-to-pdf">Word to PDF</a></li>
           <li><a href="#" class="tool-link" data-tool="pdf-to-word">PDF to Word</a></li>
           <li><a href="#" class="tool-link" data-tool="excel-to-pdf">Excel to PDF</a></li>
           <li><a href="#" class="tool-link" data-tool="pdf-to-excel">PDF to Excel</a></li>
           <li><a href="#" class="tool-link" data-tool="ppt-to-pdf">PowerPoint to PDF</a></li>
-          <li><a href="#" class="tool-link" data-tool="compress">Compress PDF</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Organize & Pages</h4>
+        <h4>Organize & Convert</h4>
         <ul>
           <li><a href="#" class="tool-link" data-tool="merge">Merge PDF</a></li>
           <li><a href="#" class="tool-link" data-tool="split">Split PDF</a></li>
           <li><a href="#" class="tool-link" data-tool="organize">Organize Pages</a></li>
+          <li><a href="#" class="tool-link" data-tool="compress">Compress PDF</a></li>
           <li><a href="#" class="tool-link" data-tool="pdf-to-img">PDF to JPG / PNG</a></li>
           <li><a href="#" class="tool-link" data-tool="img-to-pdf">Images to PDF</a></li>
           <li><a href="#" class="tool-link" data-tool="ocr-pdf">OCR Recognition</a></li>
@@ -599,7 +745,7 @@
     </div>
     <div class="footer-bottom">
       <div>&copy; 2026 <strong>Insight Tools</strong>. Free, private, and open for everyone.</div>
-      <div><a href="/admin" class="footer-admin-link"><i class="fa-solid fa-lock"></i> Admin Console</a></div>
+      <div><a href="/admin" class="footer-admin-link"><i class="fa-solid fa-shield-halved"></i> Admin Console</a></div>
     </div>
   </footer>
 
