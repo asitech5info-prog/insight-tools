@@ -208,9 +208,11 @@ class InsightApp {
   /* Router & View Controller                                                  */
   /* -------------------------------------------------------------------------- */
   handleRoute() {
-    const hash = window.location.hash.replace('#/', '').trim();
-    if (!hash || hash === '#') {
+    const hash = window.location.hash.replace(/^#\/?/, '').trim();
+    if (!hash) {
       this.showHome();
+    } else if (hash === 'admin') {
+      window.location.href = '/admin';
     } else {
       const toolMap = {
         'word-to-pdf': window.Tools.wordToPdf,

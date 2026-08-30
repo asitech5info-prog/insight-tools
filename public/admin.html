@@ -31,16 +31,22 @@
 
       <form id="adminLoginForm" class="admin-login-form">
         <div class="form-group" style="text-align: left;">
-          <label class="form-label">Master Admin Password</label>
+          <label class="form-label" for="adminPasswordInput">Master Admin Password</label>
           <div style="position: relative;">
             <input type="password" id="adminPasswordInput" class="form-control" placeholder="Enter security password" required autofocus>
           </div>
+          <small style="display: block; margin-top: 0.4rem; color: var(--text-muted); font-size: 0.78rem;">
+            <i class="fa-solid fa-key"></i> Default Key: <code>InsightAdmin2026!</code>
+          </small>
         </div>
 
         <button type="submit" id="btnAdminLogin" class="btn-execute-action" style="margin-top: 1rem; width: 100%;">
           <i class="fa-solid fa-arrow-right-to-bracket"></i>
           <span>Authenticate</span>
         </button>
+        <a href="/" style="display: inline-block; margin-top: 1rem; color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">
+          <i class="fa-solid fa-arrow-left"></i> Back to Main Site
+        </a>
       </form>
     </div>
   </div>
@@ -65,7 +71,7 @@
             <i class="fa-solid fa-hard-drive"></i>
             <span>Clean Storage</span>
           </button>
-          <button id="btnPurgeRAM" class="admin-btn-action" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35); color: #ef4444;" title="Purge RAM cache for Render 512MB Limit">
+          <button id="btnClearRAM" class="admin-btn-action" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35); color: #ef4444;" title="Purge RAM cache for Render 512MB Limit">
             <i class="fa-solid fa-broom-ball"></i>
             <span>Purge Memory (512MB limit)</span>
           </button>
@@ -117,7 +123,7 @@
           </div>
           <div class="metric-info">
             <div class="metric-label">Active Tools</div>
-            <div class="metric-value" id="valActiveTools">18 / 18</div>
+            <div class="metric-value" id="valActiveTools">23 / 23</div>
             <div class="metric-trend"><i class="fa-solid fa-circle-check"></i> All Operational</div>
           </div>
         </div>
@@ -143,7 +149,7 @@
               <h3 class="admin-card-title">Tools & Features Management</h3>
               <p class="admin-card-sub">Enable or temporarily disable specific conversion workflows</p>
             </div>
-            <span class="badge-count" id="toolCountBadge">18 Tools</span>
+            <span class="badge-count" id="toolCountBadge">23 Tools</span>
           </div>
 
           <div class="tools-management-list" id="toolToggleList">
@@ -155,7 +161,7 @@
         <div class="admin-card">
           <div class="admin-card-header">
             <div>
-              <h3 class="admin-card-title">Server & Render Health</h3>
+              <h3 class="admin-card-title">Server & Platform Health</h3>
               <p class="admin-card-sub">Live environment diagnostics and platform parameters</p>
             </div>
             <span class="status-indicator-badge live">Healthy</span>
@@ -164,11 +170,11 @@
           <div class="system-stats-box" id="systemStatsBox">
             <div class="sys-stat-row">
               <span class="sys-stat-key"><i class="fa-solid fa-cloud"></i> Hosting Environment</span>
-              <span class="sys-stat-val" id="sysRenderStatus">Render Cloud Ready</span>
+              <span class="sys-stat-val" id="sysRenderStatus">Cloud Production Ready</span>
             </div>
             <div class="sys-stat-row" style="flex-direction: column; align-items: stretch; gap: 0.5rem;">
               <div style="display: flex; justify-content: space-between;">
-                <span class="sys-stat-key"><i class="fa-solid fa-gauge-high"></i> Render Free Tier RAM (512 MB)</span>
+                <span class="sys-stat-key"><i class="fa-solid fa-gauge-high"></i> Memory Usage (512 MB Limit)</span>
                 <span class="sys-stat-val" id="renderRamUsageText">0 MB / 512 MB</span>
               </div>
               <div class="progress-bar-container" style="margin: 0; height: 10px; background: rgba(255,255,255,0.08);">
@@ -184,7 +190,7 @@
               <span class="sys-stat-val" id="sysPlatform">Linux/Win x64</span>
             </div>
             <div class="sys-stat-row">
-              <span class="sys-stat-key"><i class="fa-solid fa-hard-drive"></i> Render Disk Storage</span>
+              <span class="sys-stat-key"><i class="fa-solid fa-hard-drive"></i> Disk Storage</span>
               <span class="sys-stat-val" id="sysDiskUsage" style="color: #10b981; font-weight: 700;">0.00 MB (Client-Side Privacy)</span>
             </div>
             <div class="sys-stat-row">
@@ -200,12 +206,16 @@
           <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
             <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem;">Global Configuration</h4>
             <div class="form-group">
-              <label class="form-label">Max Allowed File Size (MB)</label>
+              <label class="form-label" for="cfgMaxFileSize">Max Allowed File Size (MB)</label>
               <input type="number" id="cfgMaxFileSize" class="form-control" value="100" min="10" max="500">
             </div>
             <div class="form-group">
+              <label class="form-label" for="cfgAnnouncement">Global Announcement Banner (Optional)</label>
+              <input type="text" id="cfgAnnouncement" class="form-control" placeholder="e.g. System maintenance scheduled...">
+            </div>
+            <div class="form-group">
               <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; cursor: pointer;">
-                <input type="checkbox" id="cfgMaintenance" style="accent-color: var(--primary);">
+                <input type="checkbox" id="cfgMaintenanceMode" style="accent-color: var(--primary);">
                 Enable Maintenance Mode
               </label>
             </div>
@@ -227,14 +237,12 @@
         </div>
 
         <div class="audit-table-wrapper">
-          <table class="audit-table">
+          <table class="audit-table" id="auditLogsTable">
             <thead>
               <tr>
                 <th>Time</th>
-                <th>Tool</th>
-                <th>Operation Scope</th>
-                <th>Size</th>
-                <th>Execution Time</th>
+                <th>Action / Tool</th>
+                <th>Details</th>
                 <th>Status</th>
               </tr>
             </thead>

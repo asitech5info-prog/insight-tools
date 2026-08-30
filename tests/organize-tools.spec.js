@@ -45,7 +45,7 @@ test.describe('Organize & Layout PDF Tools', () => {
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Set page range option
-    await page.fill('#splitPageRange', '1');
+    await page.fill('#splitRangeInput', '1');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -123,7 +123,7 @@ test.describe('Organize & Layout PDF Tools', () => {
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Select 180 degrees
-    await page.click('.rotate-btn[data-deg="180"]');
+    await page.check('input[name="rotateAngle"][value="180"]');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),

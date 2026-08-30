@@ -312,7 +312,7 @@ app.post('/api/admin/config', requireAdminAuth, (req, res) => {
    ========================================================================== */
 
 // Admin Panel Direct Route
-app.get('/admin', (req, res) => {
+app.get(['/admin', '/admin/', '/admin.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 

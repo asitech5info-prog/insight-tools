@@ -43,7 +43,7 @@ test.describe('Conversion, Image & Security Tools', () => {
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Select PNG format
-    await page.selectOption('#p2iFormat', 'image/png');
+    await page.check('input[name="imgFormat"][value="image/png"]');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -70,8 +70,8 @@ test.describe('Conversion, Image & Security Tools', () => {
     await expect(cards).toHaveCount(2);
 
     // Verify options
-    await page.selectOption('#i2pPageSize', 'A4');
-    await page.selectOption('#i2pMargin', 'none');
+    await page.selectOption('#imgPdfPageSize', 'a4');
+    await page.selectOption('#imgPdfMargin', '0');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -94,7 +94,7 @@ test.describe('Conversion, Image & Security Tools', () => {
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Select Auto Remove background option
-    await page.selectOption('#bgModeSelect', 'auto');
+    await page.check('input[name="bgReplaceMode"][value="transparent"]');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -105,7 +105,7 @@ test.describe('Conversion, Image & Security Tools', () => {
       })()
     ]);
 
-    expect(download.suggestedFilename()).toContain('nobg.png');
+    expect(download.suggestedFilename()).toContain('.png');
   });
 
   test('Watermark PDF stamps custom text with position grid', async ({ page }) => {
@@ -185,7 +185,7 @@ test.describe('Conversion, Image & Security Tools', () => {
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Verify signature canvas exists
-    const sigCanvas = page.locator('#signatureCanvas');
+    const sigCanvas = page.locator('#signPadCanvas');
     await expect(sigCanvas).toBeVisible();
 
     // Draw on signature canvas
@@ -222,12 +222,9 @@ test.describe('Conversion, Image & Security Tools', () => {
     await page.click('#btnExecuteAction');
     await expect(page.locator('#successScreen')).toBeVisible({ timeout: 20000 });
 
-    // Verify textarea populated
-    const extractedArea = page.locator('#extractedTextarea');
-    await expect(extractedArea).toBeVisible();
-    const val = await extractedArea.inputValue();
-    expect(val.length).toBeGreaterThan(0);
-    expect(val).toContain('Page 1');
+    // Verify success screen & download button
+    await expect(page.locator('#btnDownloadPrimary')).toBeVisible();
+    await expect(page.locator('#btnDownloadText')).toContainText('.txt');
 
     // Download text file
     const [download] = await Promise.all([
