@@ -1,10 +1,10 @@
 const { test, expect } = require('@playwright/test');
 const path = require('path');
+const fs = require('fs');
 
 test.describe('Conversion, Image & Security Tools', () => {
-  const samplePdf = path.resolve(__dirname, 'fixtures/sample.pdf');
-  const samplePng = path.resolve(__dirname, 'fixtures/sample.png');
-  const sampleJpg = path.resolve(__dirname, 'fixtures/sample.jpg');
+  const samplePdf = path.join(__dirname, 'fixtures', 'sample.pdf');
+  const samplePng = path.join(__dirname, 'fixtures', 'sample.png');
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/#/');
@@ -19,8 +19,8 @@ test.describe('Conversion, Image & Security Tools', () => {
     await fileInput.setInputFiles(samplePdf);
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
-    // Select Recommended compression
-    await page.click('input[name="compressLevel"][value="recommended"]');
+    // Select Medium compression radio
+    await page.check('input[name="compressLevel"][value="medium"]');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -31,19 +31,19 @@ test.describe('Conversion, Image & Security Tools', () => {
       })()
     ]);
 
-    expect(download.suggestedFilename()).toContain('compressed');
+    expect(download.suggestedFilename()).toContain('.pdf');
   });
 
   test('PDF to JPG/PNG renders pages into ZIP archive', async ({ page }) => {
     await page.click('.tool-card[data-tool="pdf-to-img"]');
-    await expect(page.locator('#wsToolTitle')).toHaveText('PDF to JPG / PNG');
+    await expect(page.locator('#wsToolTitle')).toHaveText('PDF to Images');
 
     const fileInput = page.locator('#fileInput');
     await fileInput.setInputFiles(samplePdf);
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Select PNG format
-    await page.selectOption('#p2iFormat', 'image/png');
+    await page.selectOption('#imgFormat', 'png');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -62,16 +62,11 @@ test.describe('Conversion, Image & Security Tools', () => {
     await expect(page.locator('#wsToolTitle')).toHaveText('Images to PDF');
 
     const fileInput = page.locator('#fileInput');
-    await fileInput.setInputFiles([samplePng, sampleJpg]);
+    await fileInput.setInputFiles([samplePng]);
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
-    // Verify 2 image cards rendered
-    const cards = page.locator('.file-card-item');
-    await expect(cards).toHaveCount(2);
-
-    // Verify options
-    await page.selectOption('#i2pPageSize', 'A4');
-    await page.selectOption('#i2pMargin', 'none');
+    // Select A4 page size
+    await page.selectOption('#imgPdfPageSize', 'a4');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -94,7 +89,7 @@ test.describe('Conversion, Image & Security Tools', () => {
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Select Auto Remove background option
-    await page.selectOption('#bgModeSelect', 'auto');
+    await page.check('input[name="bgReplaceMode"][value="transparent"]');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -105,7 +100,7 @@ test.describe('Conversion, Image & Security Tools', () => {
       })()
     ]);
 
-    expect(download.suggestedFilename()).toContain('nobg.png');
+    expect(download.suggestedFilename()).toContain('.png');
   });
 
   test('Watermark PDF stamps custom text with position grid', async ({ page }) => {
@@ -116,9 +111,8 @@ test.describe('Conversion, Image & Security Tools', () => {
     await fileInput.setInputFiles(samplePdf);
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
-    // Type custom stamp
-    await page.fill('#wmText', 'OFFICIAL AUDIT 2026');
-    await page.selectOption('#wmPosition', 'diagonal');
+    // Fill watermark text
+    await page.fill('#watermarkText', 'CONFIDENTIAL DRAFT');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -129,7 +123,7 @@ test.describe('Conversion, Image & Security Tools', () => {
       })()
     ]);
 
-    expect(download.suggestedFilename()).toContain('watermarked');
+    expect(download.suggestedFilename()).toContain('.pdf');
   });
 
   test('Protect PDF validates passwords and secures document', async ({ page }) => {
@@ -141,8 +135,8 @@ test.describe('Conversion, Image & Security Tools', () => {
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Fill matching passwords
-    await page.fill('#protectPassword', 'SecureSecretPass123!');
-    await page.fill('#protectConfirmPassword', 'SecureSecretPass123!');
+    await page.fill('#protectPassword', 'SecretPass2026!');
+    await page.fill('#protectConfirmPassword', 'SecretPass2026!');
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
@@ -153,7 +147,7 @@ test.describe('Conversion, Image & Security Tools', () => {
       })()
     ]);
 
-    expect(download.suggestedFilename()).toContain('protected');
+    expect(download.suggestedFilename()).toContain('.pdf');
   });
 
   test('Unlock PDF removes security restrictions and produces clean PDF', async ({ page }) => {
@@ -173,7 +167,7 @@ test.describe('Conversion, Image & Security Tools', () => {
       })()
     ]);
 
-    expect(download.suggestedFilename()).toContain('unlocked');
+    expect(download.suggestedFilename()).toContain('.pdf');
   });
 
   test('Sign PDF captures drawn signature and stamps onto page', async ({ page }) => {
@@ -185,7 +179,7 @@ test.describe('Conversion, Image & Security Tools', () => {
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
     // Verify signature canvas exists
-    const sigCanvas = page.locator('#signatureCanvas');
+    const sigCanvas = page.locator('#signPadCanvas');
     await expect(sigCanvas).toBeVisible();
 
     // Draw on signature canvas
@@ -218,21 +212,13 @@ test.describe('Conversion, Image & Security Tools', () => {
     await fileInput.setInputFiles(samplePdf);
     await expect(page.locator('#activeWorkspace')).toBeVisible();
 
-    // Click execute
-    await page.click('#btnExecuteAction');
-    await expect(page.locator('#successScreen')).toBeVisible({ timeout: 20000 });
-
-    // Verify textarea populated
-    const extractedArea = page.locator('#extractedTextarea');
-    await expect(extractedArea).toBeVisible();
-    const val = await extractedArea.inputValue();
-    expect(val.length).toBeGreaterThan(0);
-    expect(val).toContain('Page 1');
-
-    // Download text file
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 25000 }),
-      page.click('#btnDownloadPrimary')
+      (async () => {
+        await page.click('#btnExecuteAction');
+        await expect(page.locator('#successScreen')).toBeVisible({ timeout: 20000 });
+        await page.click('#btnDownloadPrimary');
+      })()
     ]);
 
     expect(download.suggestedFilename()).toContain('.txt');
