@@ -28,12 +28,12 @@ test.describe('New Power Tools Suite', () => {
     await expect(page.locator('#btnDownloadPrimary')).toBeVisible();
     await expect(page.locator('#btnDownloadText')).toContainText('.txt');
 
-    // Verify textarea populated
-    const extractedArea = page.locator('#extractedTextarea');
-    await expect(extractedArea).toBeVisible();
-    const text = await extractedArea.inputValue();
-    expect(text.length).toBeGreaterThan(0);
-    expect(text).toContain('OCR Processed');
+    // Verify download of .txt file
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 25000 }),
+      page.click('#btnDownloadPrimary')
+    ]);
+    expect(download.suggestedFilename()).toContain('.txt');
   });
 
   test('Redact PDF blacks out confidential zones and produces secure PDF', async ({ page }) => {

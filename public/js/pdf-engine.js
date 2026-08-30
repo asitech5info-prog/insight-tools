@@ -173,7 +173,9 @@ window.PDFEngine = {
   },
 
   // Download Blob directly to client
-  saveBlob(blob, filename) {
+  saveBlob(data, filename, mimeType = 'application/pdf') {
+    if (!data) return;
+    const blob = data instanceof Blob ? data : new Blob([data], { type: mimeType });
     if (window.saveAs) {
       window.saveAs(blob, filename);
     } else {
@@ -188,6 +190,10 @@ window.PDFEngine = {
         URL.revokeObjectURL(url);
       }, 200);
     }
+  },
+
+  downloadFile(data, filename, mimeType = 'application/pdf') {
+    this.saveBlob(data, filename, mimeType);
   },
 
   // Sanitize text for pdf-lib StandardFonts (WinAnsi / Latin-1 encoding)

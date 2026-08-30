@@ -8,7 +8,7 @@ test.describe('Navigation, Search, Filters & Theme', () => {
 
   test('Homepage renders all 23 tools and branding correctly', async ({ page }) => {
     // Check Brand Title & Subtitle
-    await expect(page.locator('.brand-text')).toContainText('Insight');
+    await expect(page.locator('.navbar .brand-text')).toContainText('Insight');
     await expect(page.locator('.hero-title')).toBeVisible();
 
     // Verify 23 Tool Cards rendered
