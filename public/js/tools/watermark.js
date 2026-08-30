@@ -6,7 +6,7 @@ window.Tools = window.Tools || {};
 window.Tools.watermark = {
   id: 'watermark',
   title: 'Watermark PDF',
-  description: 'Stamp custom text watermarks onto PDF pages with full control over position, opacity, and angle.',
+  description: 'Stamp customized text or confidential notices across all pages of your PDF.',
   accept: '.pdf',
   multiple: false,
 
@@ -14,83 +14,84 @@ window.Tools.watermark = {
     container.innerHTML = `
       <div class="form-group">
         <label class="form-label">Watermark Text</label>
-        <input type="text" id="wmText" class="form-control" value="CONFIDENTIAL" placeholder="e.g. CONFIDENTIAL or INSIGHT TOOLS">
+        <input type="text" id="wmText" class="form-control" value="CONFIDENTIAL" placeholder="e.g. CONFIDENTIAL, DRAFT">
       </div>
 
       <div class="form-group">
-        <label class="form-label">Position Anchor</label>
-        <div class="alignment-grid" id="wmAlignGrid">
-          <div class="align-grid-cell" data-pos="tl" title="Top Left"><i class="fa-solid fa-arrow-up-left"></i></div>
-          <div class="align-grid-cell" data-pos="tc" title="Top Center"><i class="fa-solid fa-arrow-up"></i></div>
-          <div class="align-grid-cell" data-pos="tr" title="Top Right"><i class="fa-solid fa-arrow-up-right"></i></div>
-          <div class="align-grid-cell" data-pos="ml" title="Middle Left"><i class="fa-solid fa-arrow-left"></i></div>
-          <div class="align-grid-cell active" data-pos="mc" title="Center"><i class="fa-solid fa-circle-dot"></i></div>
-          <div class="align-grid-cell" data-pos="mr" title="Middle Right"><i class="fa-solid fa-arrow-right"></i></div>
-          <div class="align-grid-cell" data-pos="bl" title="Bottom Left"><i class="fa-solid fa-arrow-down-left"></i></div>
-          <div class="align-grid-cell" data-pos="bc" title="Bottom Center"><i class="fa-solid fa-arrow-down"></i></div>
-          <div class="align-grid-cell" data-pos="br" title="Bottom Right"><i class="fa-solid fa-arrow-down-right"></i></div>
+        <label class="form-label">Preset Stamps</label>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" class="btn-tool-sm wm-preset-btn" data-text="CONFIDENTIAL">CONFIDENTIAL</button>
+          <button type="button" class="btn-tool-sm wm-preset-btn" data-text="DRAFT">DRAFT</button>
+          <button type="button" class="btn-tool-sm wm-preset-btn" data-text="APPROVED">APPROVED</button>
+          <button type="button" class="btn-tool-sm wm-preset-btn" data-text="DO NOT COPY">DO NOT COPY</button>
         </div>
       </div>
 
       <div class="form-group">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-          <label class="form-label" style="margin-bottom: 0;">Font Size</label>
-          <span id="wmFontSizeVal" style="font-size: 0.8rem; font-weight: 700; color: var(--primary);">48 pt</span>
-        </div>
-        <input type="range" id="wmFontSize" min="16" max="96" value="48">
-      </div>
-
-      <div class="form-group">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-          <label class="form-label" style="margin-bottom: 0;">Opacity</label>
-          <span id="wmOpacityVal" style="font-size: 0.8rem; font-weight: 700; color: var(--primary);">35%</span>
-        </div>
-        <input type="range" id="wmOpacity" min="10" max="100" value="35">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Rotation Angle</label>
-        <select id="wmAngle" class="form-control">
-          <option value="45" selected>45° Diagonal</option>
-          <option value="0">0° Horizontal</option>
-          <option value="-45">-45° Reverse Diagonal</option>
-          <option value="90">90° Vertical</option>
+        <label class="form-label">Position & Placement</label>
+        <select id="wmPosition" class="form-control">
+          <option value="diagonal" selected>Diagonal Center (45° Angle)</option>
+          <option value="center">Horizontal Center</option>
+          <option value="top">Top Header Banner</option>
+          <option value="bottom">Bottom Footer Notice</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label class="form-label">Watermark Color</label>
-        <select id="wmColor" class="form-control">
-          <option value="red" selected>Red (#ef4444)</option>
-          <option value="black">Black (#0f172a)</option>
-          <option value="gray">Gray (#64748b)</option>
-          <option value="blue">Blue (#3b82f6)</option>
-          <option value="purple">Purple (#8b5cf6)</option>
-        </select>
+        <label class="form-label">Stamp Color</label>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <input type="color" id="wmColor" value="#dc2626" style="width: 44px; height: 38px; border: none; border-radius: 6px; cursor: pointer;">
+          <select id="wmColorPreset" class="form-control" style="flex: 1;">
+            <option value="#dc2626" selected>Security Red (#DC2626)</option>
+            <option value="#2563eb">Corporate Blue (#2563EB)</option>
+            <option value="#64748b">Slate Gray (#64748B)</option>
+            <option value="#10b981">Approved Green (#10B981)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Opacity / Transparency: <span id="wmOpacityVal">25%</span></label>
+        <input type="range" id="wmOpacity" min="10" max="100" value="25" class="form-range" style="width: 100%;">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Font Size: <span id="wmSizeVal">54 pt</span></label>
+        <input type="range" id="wmSize" min="20" max="100" value="54" class="form-range" style="width: 100%;">
       </div>
 
       <div class="form-group">
         <label class="form-label">Output Filename</label>
-        <input type="text" id="wmFilename" class="form-control" value="watermarked_document.pdf">
+        <input type="text" id="wmFilename" class="form-control" value="watermarked.pdf">
       </div>
     `;
 
-    // Sliders live text
-    const sizeInput = document.getElementById('wmFontSize');
-    const sizeVal = document.getElementById('wmFontSizeVal');
-    sizeInput?.addEventListener('input', (e) => sizeVal.textContent = `${e.target.value} pt`);
-
-    const opInput = document.getElementById('wmOpacity');
-    const opVal = document.getElementById('wmOpacityVal');
-    opInput?.addEventListener('input', (e) => opVal.textContent = `${e.target.value}%`);
-
-    // Grid selection
-    const gridCells = container.querySelectorAll('.align-grid-cell');
-    gridCells.forEach(cell => {
-      cell.addEventListener('click', () => {
-        gridCells.forEach(c => c.classList.remove('active'));
-        cell.classList.add('active');
+    // Bind Presets
+    container.querySelectorAll('.wm-preset-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const textInput = document.getElementById('wmText');
+        if (textInput) textInput.value = e.target.dataset.text;
       });
+    });
+
+    // Color preset sync
+    document.getElementById('wmColorPreset')?.addEventListener('change', (e) => {
+      const picker = document.getElementById('wmColor');
+      if (picker) picker.value = e.target.value;
+    });
+
+    document.getElementById('wmColor')?.addEventListener('input', (e) => {
+      const select = document.getElementById('wmColorPreset');
+      if (select) select.value = e.target.value;
+    });
+
+    // Sliders live values
+    document.getElementById('wmOpacity')?.addEventListener('input', (e) => {
+      document.getElementById('wmOpacityVal').textContent = `${e.target.value}%`;
+    });
+
+    document.getElementById('wmSize')?.addEventListener('input', (e) => {
+      document.getElementById('wmSizeVal').textContent = `${e.target.value} pt`;
     });
   },
 
@@ -99,60 +100,86 @@ window.Tools.watermark = {
       throw new Error('Please select a PDF file.');
     }
 
+    const textRaw = document.getElementById('wmText')?.value?.trim();
+    if (!textRaw) {
+      throw new Error('Please enter watermark text.');
+    }
+
+    const text = PDFEngine.sanitizeWinAnsi(textRaw);
+    if (!text) {
+      throw new Error('Watermark text must contain valid alphanumeric characters.');
+    }
+
     const file = files[0];
     const { PDFDocument, StandardFonts, rgb, degrees } = PDFLib;
-    app.updateProgress(15, 'Loading PDF document...');
+    app.updateProgress(20, 'Loading PDF document...');
 
     const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
     const pdfDoc = await PDFDocument.load(arrayBuffer);
     const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    const position = document.getElementById('wmPosition')?.value || 'diagonal';
+    const hexColor = document.getElementById('wmColor')?.value || '#dc2626';
+    const opacity = parseInt(document.getElementById('wmOpacity')?.value || '25', 10) / 100;
+    const fontSize = parseInt(document.getElementById('wmSize')?.value || '54', 10);
+
+    const colorRgb = PDFEngine.hexToPdfRgb(hexColor);
     const pages = pdfDoc.getPages();
+    const totalPages = pages.length;
 
-    const text = document.getElementById('wmText')?.value?.trim() || 'CONFIDENTIAL';
-    const fontSize = parseInt(document.getElementById('wmFontSize')?.value || '48', 10);
-    const opacity = parseInt(document.getElementById('wmOpacity')?.value || '35', 10) / 100;
-    const angle = parseInt(document.getElementById('wmAngle')?.value || '45', 10);
-    const colorKey = document.getElementById('wmColor')?.value || 'red';
-    const pos = document.querySelector('.align-grid-cell.active')?.getAttribute('data-pos') || 'mc';
+    for (let i = 0; i < totalPages; i++) {
+      const progress = Math.round(20 + ((i / totalPages) * 70));
+      app.updateProgress(progress, `Stamping watermark on page ${i + 1} of ${totalPages}...`);
 
-    let colorRgb;
-    if (colorKey === 'red') colorRgb = rgb(0.93, 0.27, 0.27);
-    else if (colorKey === 'black') colorRgb = rgb(0.06, 0.09, 0.16);
-    else if (colorKey === 'blue') colorRgb = rgb(0.23, 0.51, 0.96);
-    else if (colorKey === 'purple') colorRgb = rgb(0.54, 0.36, 0.96);
-    else colorRgb = rgb(0.4, 0.45, 0.55); // gray
-
-    const textWidth = font.widthOfTextAtSize(text, fontSize);
-    const textHeight = font.heightAtSize(fontSize);
-
-    pages.forEach((page, idx) => {
+      const page = pages[i];
       const { width, height } = page.getSize();
-      let x, y;
+      const textWidth = font.widthOfTextAtSize(text, fontSize);
+      const textHeight = font.heightAtSize(fontSize);
 
-      // Coordinate mapping based on 9-point grid
-      if (pos.includes('l')) x = 40;
-      else if (pos.includes('r')) x = width - textWidth - 40;
-      else x = (width - textWidth) / 2;
+      if (position === 'diagonal') {
+        page.drawText(text, {
+          x: (width / 2) - (textWidth / 2.8),
+          y: (height / 2) - (textHeight / 2.8),
+          size: fontSize,
+          font: font,
+          color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
+          opacity: opacity,
+          rotate: degrees(45)
+        });
+      } else if (position === 'center') {
+        page.drawText(text, {
+          x: (width / 2) - (textWidth / 2),
+          y: (height / 2) - (textHeight / 2),
+          size: fontSize,
+          font: font,
+          color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
+          opacity: opacity
+        });
+      } else if (position === 'top') {
+        page.drawText(text, {
+          x: (width / 2) - (textWidth / 2),
+          y: height - 40,
+          size: Math.min(fontSize, 24),
+          font: font,
+          color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
+          opacity: opacity
+        });
+      } else if (position === 'bottom') {
+        page.drawText(text, {
+          x: (width / 2) - (textWidth / 2),
+          y: 30,
+          size: Math.min(fontSize, 24),
+          font: font,
+          color: rgb(colorRgb.r, colorRgb.g, colorRgb.b),
+          opacity: opacity
+        });
+      }
+    }
 
-      if (pos.startsWith('t')) y = height - textHeight - 40;
-      else if (pos.startsWith('b')) y = 40;
-      else y = (height - textHeight) / 2;
-
-      page.drawText(text, {
-        x: x,
-        y: y,
-        size: fontSize,
-        font: font,
-        color: colorRgb,
-        opacity: opacity,
-        rotate: degrees(angle)
-      });
-    });
-
-    app.updateProgress(90, 'Saving watermarked document...');
+    app.updateProgress(95, 'Saving watermarked document...');
     const pdfBytes = await pdfDoc.save();
 
-    let outName = document.getElementById('wmFilename')?.value?.trim() || 'watermarked_document.pdf';
+    let outName = document.getElementById('wmFilename')?.value?.trim() || `${file.name.replace(/\.[^/.]+$/, "")}_watermarked.pdf`;
     if (!outName.toLowerCase().endsWith('.pdf')) outName += '.pdf';
 
     app.updateProgress(100, 'Done!');
@@ -160,7 +187,7 @@ window.Tools.watermark = {
       data: pdfBytes,
       filename: outName,
       mimeType: 'application/pdf',
-      summary: `Successfully applied watermark to all ${pages.length} pages`
+      summary: `Successfully watermarked all ${totalPages} pages with "${text}"`
     };
   }
 };

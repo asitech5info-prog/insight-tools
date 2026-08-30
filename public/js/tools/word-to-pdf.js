@@ -1,161 +1,147 @@
 /**
- * Tool: Word to PDF (.docx -> .pdf)
+ * Tool: Word to PDF Converter
  */
 window.Tools = window.Tools || {};
 
 window.Tools.wordToPdf = {
   id: 'word-to-pdf',
   title: 'Word to PDF',
-  description: 'Convert Microsoft Word documents (.docx) into crisp, high-quality PDF files.',
-  accept: '.docx,.doc',
+  description: 'Convert DOCX documents into clean, searchable, standardized PDF files.',
+  accept: '.docx',
   multiple: false,
 
   renderOptions(container) {
     container.innerHTML = `
       <div class="form-group">
-        <label class="form-label">Page Size & Margins</label>
-        <select id="wordPdfPageSize" class="form-control">
-          <option value="a4" selected>A4 (Standard Document)</option>
-          <option value="letter">US Letter</option>
+        <label class="form-label">PDF Page Layout</label>
+        <select id="w2pPageSize" class="form-control">
+          <option value="A4" selected>A4 Standard (210 x 297 mm)</option>
+          <option value="Letter">US Letter (8.5 x 11 in)</option>
         </select>
       </div>
-
       <div class="form-group">
         <label class="form-label">Font Family</label>
-        <select id="wordPdfFont" class="form-control">
-          <option value="Helvetica" selected>Helvetica / Arial (Modern Clean)</option>
-          <option value="TimesRoman">Times New Roman (Formal Serif)</option>
-          <option value="Courier">Courier (Monospace)</option>
+        <select id="w2pFont" class="form-control">
+          <option value="Helvetica" selected>Helvetica / Arial Clean</option>
+          <option value="TimesRoman">Times New Roman Classic</option>
+          <option value="Courier">Courier Monospace</option>
         </select>
       </div>
-
+      <div class="form-group">
+        <label class="form-label">Font Size</label>
+        <select id="w2pFontSize" class="form-control">
+          <option value="10">Compact (10pt)</option>
+          <option value="12" selected>Standard (12pt)</option>
+          <option value="14">Large (14pt)</option>
+        </select>
+      </div>
       <div class="form-group">
         <label class="form-label">Output Filename</label>
-        <input type="text" id="wordPdfFilename" class="form-control" value="converted_word.pdf">
+        <input type="text" id="w2pFilename" class="form-control" value="converted_document.pdf">
       </div>
     `;
   },
 
   async execute(files, app) {
     if (!files || files.length === 0) {
-      throw new Error('Please select a Word (.docx) file.');
+      throw new Error('Please select a DOCX file to convert.');
     }
 
     const file = files[0];
-    const { PDFDocument, StandardFonts, rgb, PageSizes } = PDFLib;
+    app.updateProgress(15, 'Reading DOCX document structure...');
 
-    app.updateProgress(15, 'Reading Microsoft Word document...');
     const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
+    app.updateProgress(35, 'Extracting text and formatting...');
 
-    let htmlContent = '';
-    let rawText = '';
-
-    if (window.mammoth) {
-      app.updateProgress(35, 'Parsing Word formatting & headings...');
-      const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
-      htmlContent = result.value;
-      const textResult = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-      rawText = textResult.value;
-    } else {
-      // Fallback text decode
-      const decoder = new TextDecoder('utf-8');
-      rawText = decoder.decode(arrayBuffer).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+    // Use Mammoth to extract raw text & paragraphs
+    const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+    const rawText = result.value || '';
+    
+    if (!rawText.trim()) {
+      throw new Error('The DOCX file appears to be empty or contains unsupported media.');
     }
 
-    app.updateProgress(60, 'Generating PDF pages...');
+    app.updateProgress(55, 'Generating PDF vector layout...');
+
+    const { PDFDocument, StandardFonts, rgb } = PDFLib;
     const pdfDoc = await PDFDocument.create();
 
-    const fontChoice = document.getElementById('wordPdfFont')?.value || 'Helvetica';
-    let chosenFont, chosenFontBold;
-    if (fontChoice === 'TimesRoman') {
-      chosenFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-      chosenFontBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
-    } else if (fontChoice === 'Courier') {
-      chosenFont = await pdfDoc.embedFont(StandardFonts.Courier);
-      chosenFontBold = await pdfDoc.embedFont(StandardFonts.CourierBold);
-    } else {
-      chosenFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      chosenFontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    }
+    const pageSizeChoice = document.getElementById('w2pPageSize')?.value || 'A4';
+    const fontChoice = document.getElementById('w2pFont')?.value || 'Helvetica';
+    const fontSize = parseInt(document.getElementById('w2pFontSize')?.value || '12', 10);
 
-    const pageSizeChoice = document.getElementById('wordPdfPageSize')?.value || 'a4';
-    const [pageWidth, pageHeight] = pageSizeChoice === 'letter' ? PageSizes.Letter : PageSizes.A4;
+    // Standard Page Dimensions (points: 72 points per inch)
+    const pageWidth = pageSizeChoice === 'Letter' ? 612 : 595.28;
+    const pageHeight = pageSizeChoice === 'Letter' ? 792 : 841.89;
 
-    const margin = 50;
-    const contentWidth = pageWidth - (margin * 2);
-    const lineHeight = 16;
-    const fontSize = 11;
-    const textColor = rgb(0.1, 0.12, 0.18);
+    let font;
+    if (fontChoice === 'TimesRoman') font = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    else if (fontChoice === 'Courier') font = await pdfDoc.embedFont(StandardFonts.Courier);
+    else font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-    // Break text into paragraphs
-    const paragraphs = rawText.split('\n');
-    let currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
-    let currentY = pageHeight - margin;
+    const margin = 48; // 0.66 in margins
+    const maxLineWidth = pageWidth - (margin * 2);
+    const lineHeight = fontSize * 1.45;
+
+    // Split text into paragraphs and sanitize WinAnsi
+    const sanitizedText = PDFEngine.sanitizeWinAnsi(rawText);
+    const paragraphs = sanitizedText.split(/\r?\n/);
+    const lines = [];
 
     for (let p of paragraphs) {
-      const trimmed = p.trim();
-      if (!trimmed) {
-        currentY -= lineHeight * 0.8;
-        if (currentY < margin + lineHeight) {
-          currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
-          currentY = pageHeight - margin;
-        }
+      p = p.trim();
+      if (!p) {
+        lines.push(''); // empty line for paragraph spacing
         continue;
       }
 
-      // Check if it looks like a heading
-      const isHeading = trimmed.length < 60 && !trimmed.endsWith('.');
-      const activeFont = isHeading ? chosenFontBold : chosenFont;
-      const activeFontSize = isHeading ? fontSize + 3 : fontSize;
-      const activeLineHeight = isHeading ? lineHeight + 6 : lineHeight;
-
-      // Word wrapping
-      const words = trimmed.split(' ');
+      // Word wrapping algorithm with WinAnsi safe font width check
+      const words = p.split(/\s+/);
       let currentLine = '';
 
       for (let word of words) {
         const testLine = currentLine ? `${currentLine} ${word}` : word;
-        const testWidth = activeFont.widthOfTextAtSize(testLine, activeFontSize);
+        const testWidth = font.widthOfTextAtSize(testLine, fontSize);
 
-        if (testWidth > contentWidth && currentLine) {
-          if (currentY < margin + activeLineHeight) {
-            currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
-            currentY = pageHeight - margin;
-          }
-          currentPage.drawText(currentLine, {
-            x: margin,
-            y: currentY,
-            size: activeFontSize,
-            font: activeFont,
-            color: isHeading ? rgb(0.05, 0.08, 0.15) : textColor
-          });
-          currentY -= activeLineHeight;
-          currentLine = word;
-        } else {
+        if (testWidth <= maxLineWidth) {
           currentLine = testLine;
+        } else {
+          if (currentLine) lines.push(currentLine);
+          currentLine = word;
         }
       }
-
-      if (currentLine) {
-        if (currentY < margin + activeLineHeight) {
-          currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
-          currentY = pageHeight - margin;
-        }
-        currentPage.drawText(currentLine, {
-          x: margin,
-          y: currentY,
-          size: activeFontSize,
-          font: activeFont,
-          color: isHeading ? rgb(0.05, 0.08, 0.15) : textColor
-        });
-        currentY -= activeLineHeight;
-      }
+      if (currentLine) lines.push(currentLine);
     }
 
-    app.updateProgress(90, 'Saving converted PDF...');
+    app.updateProgress(75, 'Drawing pages and typography...');
+
+    // Layout lines onto pages
+    let currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
+    let currentY = pageHeight - margin - fontSize;
+
+    for (let line of lines) {
+      if (currentY <= margin + fontSize) {
+        currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
+        currentY = pageHeight - margin - fontSize;
+      }
+
+      if (line !== '') {
+        currentPage.drawText(line, {
+          x: margin,
+          y: currentY,
+          size: fontSize,
+          font: font,
+          color: rgb(0.12, 0.12, 0.15)
+        });
+      }
+
+      currentY -= lineHeight;
+    }
+
+    app.updateProgress(90, 'Finalizing PDF document...');
     const pdfBytes = await pdfDoc.save();
 
-    let outName = document.getElementById('wordPdfFilename')?.value?.trim() || `${file.name.replace(/\.[^/.]+$/, "")}.pdf`;
+    let outName = document.getElementById('w2pFilename')?.value?.trim() || `${file.name.replace(/\.[^/.]+$/, "")}.pdf`;
     if (!outName.toLowerCase().endsWith('.pdf')) outName += '.pdf';
 
     app.updateProgress(100, 'Done!');
@@ -163,7 +149,7 @@ window.Tools.wordToPdf = {
       data: pdfBytes,
       filename: outName,
       mimeType: 'application/pdf',
-      summary: `Successfully converted Word document to PDF (${pdfDoc.getPageCount()} pages)`
+      summary: `Successfully converted ${file.name} to ${pdfDoc.getPageCount()}-page PDF document`
     };
   }
 };

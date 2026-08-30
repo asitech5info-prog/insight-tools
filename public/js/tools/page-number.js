@@ -6,49 +6,36 @@ window.Tools = window.Tools || {};
 window.Tools.pageNumber = {
   id: 'page-number',
   title: 'Page Numbers',
-  description: 'Add clear, customizable page numbering (Page X of Y, headers, or footers) to your PDF.',
+  description: 'Add custom page numbering to the headers or footers of your PDF document.',
   accept: '.pdf',
   multiple: false,
 
-  renderOptions(container) {
+  renderOptions(container, fileMeta) {
+    const totalPages = fileMeta ? fileMeta.pageCount : 1;
     container.innerHTML = `
       <div class="form-group">
         <label class="form-label">Position</label>
         <select id="pnPosition" class="form-control">
-          <option value="bottom-center" selected>Bottom Center</option>
-          <option value="bottom-right">Bottom Right</option>
-          <option value="bottom-left">Bottom Left</option>
-          <option value="top-center">Top Center</option>
-          <option value="top-right">Top Right</option>
-          <option value="top-left">Top Left</option>
+          <option value="bottom-center" selected>Bottom Center (Footer)</option>
+          <option value="bottom-right">Bottom Right (Footer)</option>
+          <option value="bottom-left">Bottom Left (Footer)</option>
+          <option value="top-right">Top Right (Header)</option>
+          <option value="top-center">Top Center (Header)</option>
         </select>
       </div>
-
       <div class="form-group">
         <label class="form-label">Numbering Format</label>
         <select id="pnFormat" class="form-control">
-          <option value="Page {n} of {total}" selected>Page {n} of {total}</option>
-          <option value="Page {n}">Page {n}</option>
-          <option value="{n} / {total}">{n} / {total}</option>
-          <option value="{n}">{n}</option>
+          <option value="page-of-total" selected>Page {n} of {total} (e.g. Page 1 of ${totalPages})</option>
+          <option value="simple-number">Simple Number (1, 2, 3...)</option>
+          <option value="hyphen">- {n} -</option>
+          <option value="slash">{n} / {total}</option>
         </select>
       </div>
-
       <div class="form-group">
-        <label class="form-label">First Page to Number</label>
-        <input type="number" id="pnStartPage" class="form-control" value="1" min="1">
-        <small style="color: var(--text-muted); font-size: 0.78rem;">Set to 2 if page 1 is a cover page</small>
+        <label class="form-label">Starting Page Number</label>
+        <input type="number" id="pnStartNum" class="form-control" value="1" min="1">
       </div>
-
-      <div class="form-group">
-        <label class="form-label">Font Size</label>
-        <select id="pnFontSize" class="form-control">
-          <option value="10">Small (10 pt)</option>
-          <option value="12" selected>Medium (12 pt)</option>
-          <option value="14">Large (14 pt)</option>
-        </select>
-      </div>
-
       <div class="form-group">
         <label class="form-label">Output Filename</label>
         <input type="text" id="pnFilename" class="form-control" value="numbered_document.pdf">
@@ -63,54 +50,67 @@ window.Tools.pageNumber = {
 
     const file = files[0];
     const { PDFDocument, StandardFonts, rgb } = PDFLib;
-    app.updateProgress(15, 'Loading PDF document...');
+    app.updateProgress(20, 'Loading PDF document...');
 
     const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
     const pdfDoc = await PDFDocument.load(arrayBuffer);
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    const position = document.getElementById('pnPosition')?.value || 'bottom-center';
+    const format = document.getElementById('pnFormat')?.value || 'page-of-total';
+    const startNum = parseInt(document.getElementById('pnStartNum')?.value || '1', 10);
+
     const pages = pdfDoc.getPages();
     const totalPages = pages.length;
+    const fontSize = 10;
+    const marginOffset = 30;
 
-    const pos = document.getElementById('pnPosition')?.value || 'bottom-center';
-    const format = document.getElementById('pnFormat')?.value || 'Page {n} of {total}';
-    const startPage = parseInt(document.getElementById('pnStartPage')?.value || '1', 10);
-    const fontSize = parseInt(document.getElementById('pnFontSize')?.value || '12', 10);
-    const textColor = rgb(0.2, 0.25, 0.33);
+    for (let i = 0; i < totalPages; i++) {
+      const page = pages[i];
+      const pageNum = startNum + i;
+      let text = '';
 
-    pages.forEach((page, idx) => {
-      const pageNum = idx + 1;
-      if (pageNum < startPage) return; // Skip pages before start
+      if (format === 'page-of-total') text = `Page ${pageNum} of ${totalPages + startNum - 1}`;
+      else if (format === 'simple-number') text = `${pageNum}`;
+      else if (format === 'hyphen') text = `- ${pageNum} -`;
+      else if (format === 'slash') text = `${pageNum} / ${totalPages + startNum - 1}`;
 
-      const n = pageNum - startPage + 1;
-      const text = format.replace('{n}', n).replace('{total}', totalPages - startPage + 1);
-
-      const textWidth = font.widthOfTextAtSize(text, fontSize);
-      const textHeight = font.heightAtSize(fontSize);
+      const safeText = PDFEngine.sanitizeWinAnsi(text);
+      const textWidth = font.widthOfTextAtSize(safeText, fontSize);
       const { width, height } = page.getSize();
 
       let x, y;
-      const margin = 28;
 
-      if (pos.includes('left')) x = margin;
-      else if (pos.includes('right')) x = width - textWidth - margin;
-      else x = (width - textWidth) / 2;
+      if (position === 'bottom-center') {
+        x = (width / 2) - (textWidth / 2);
+        y = marginOffset;
+      } else if (position === 'bottom-right') {
+        x = width - textWidth - marginOffset;
+        y = marginOffset;
+      } else if (position === 'bottom-left') {
+        x = marginOffset;
+        y = marginOffset;
+      } else if (position === 'top-right') {
+        x = width - textWidth - marginOffset;
+        y = height - marginOffset;
+      } else if (position === 'top-center') {
+        x = (width / 2) - (textWidth / 2);
+        y = height - marginOffset;
+      }
 
-      if (pos.startsWith('top')) y = height - textHeight - margin;
-      else y = margin;
-
-      page.drawText(text, {
+      page.drawText(safeText, {
         x: x,
         y: y,
         size: fontSize,
         font: font,
-        color: textColor
+        color: rgb(0.35, 0.4, 0.5)
       });
-    });
+    }
 
-    app.updateProgress(90, 'Saving numbered document...');
+    app.updateProgress(90, 'Saving numbered PDF...');
     const pdfBytes = await pdfDoc.save();
 
-    let outName = document.getElementById('pnFilename')?.value?.trim() || 'numbered_document.pdf';
+    let outName = document.getElementById('pnFilename')?.value?.trim() || `${file.name.replace(/\.[^/.]+$/, "")}_numbered.pdf`;
     if (!outName.toLowerCase().endsWith('.pdf')) outName += '.pdf';
 
     app.updateProgress(100, 'Done!');
@@ -118,7 +118,7 @@ window.Tools.pageNumber = {
       data: pdfBytes,
       filename: outName,
       mimeType: 'application/pdf',
-      summary: `Successfully numbered ${totalPages} pages`
+      summary: `Successfully stamped page numbers on ${totalPages} pages`
     };
   }
 };

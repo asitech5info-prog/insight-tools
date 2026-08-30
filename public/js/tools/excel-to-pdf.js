@@ -1,12 +1,12 @@
 /**
- * Tool: Excel to PDF (.xlsx / .xls -> .pdf)
+ * Tool: Excel to PDF Converter
  */
 window.Tools = window.Tools || {};
 
 window.Tools.excelToPdf = {
   id: 'excel-to-pdf',
   title: 'Excel to PDF',
-  description: 'Convert Microsoft Excel spreadsheets (.xlsx, .xls) into clean, printable PDF tables.',
+  description: 'Convert spreadsheets and workbooks into clean, formatted tabular PDF documents.',
   accept: '.xlsx,.xls,.csv',
   multiple: false,
 
@@ -14,171 +14,165 @@ window.Tools.excelToPdf = {
     container.innerHTML = `
       <div class="form-group">
         <label class="form-label">Orientation</label>
-        <select id="excelPdfOrientation" class="form-control">
-          <option value="landscape" selected>Landscape (Recommended for Spreadsheets)</option>
+        <select id="e2pOrientation" class="form-control">
+          <option value="landscape" selected>Landscape (Best for Tables & Wide Sheets)</option>
           <option value="portrait">Portrait</option>
         </select>
       </div>
-
       <div class="form-group">
-        <label class="form-label">Gridlines & Styling</label>
-        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; cursor: pointer; margin-bottom: 0.5rem;">
-          <input type="checkbox" id="excelShowGridlines" checked style="accent-color: var(--primary);">
-          Show Table Cell Gridlines
-        </label>
-        <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.88rem; cursor: pointer;">
-          <input type="checkbox" id="excelHeaderRow" checked style="accent-color: var(--primary);">
-          Highlight First Row as Header
-        </label>
+        <label class="form-label">Table Grid Style</label>
+        <select id="e2pGridStyle" class="form-control">
+          <option value="bordered" selected>Clean Bordered Grid</option>
+          <option value="striped">Zebra Striped Rows</option>
+          <option value="minimal">Minimalist (Lines Only)</option>
+        </select>
       </div>
-
       <div class="form-group">
         <label class="form-label">Output Filename</label>
-        <input type="text" id="excelPdfFilename" class="form-control" value="converted_spreadsheet.pdf">
+        <input type="text" id="e2pFilename" class="form-control" value="spreadsheet.pdf">
       </div>
     `;
   },
 
   async execute(files, app) {
     if (!files || files.length === 0) {
-      throw new Error('Please select an Excel (.xlsx/.xls) file.');
+      throw new Error('Please select an Excel or CSV file.');
     }
 
     const file = files[0];
-    const { PDFDocument, StandardFonts, rgb, PageSizes } = PDFLib;
+    app.updateProgress(15, 'Reading workbook data...');
 
-    app.updateProgress(15, 'Reading Excel workbook...');
     const arrayBuffer = await PDFEngine.readFileAsArrayBuffer(file);
+    app.updateProgress(35, 'Parsing sheets and formulas...');
 
-    if (!window.XLSX) {
-      throw new Error('Spreadsheet engine loading, please try again in a second.');
-    }
-
+    // Use XLSX parser
     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
     const sheetNames = workbook.SheetNames;
 
     if (!sheetNames || sheetNames.length === 0) {
-      throw new Error('No worksheets found in this Excel file.');
+      throw new Error('No readable sheets found in this workbook.');
     }
 
-    app.updateProgress(40, `Processing ${sheetNames.length} sheet(s)...`);
+    const firstSheet = workbook.Sheets[sheetNames[0]];
+    const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1, defval: '' });
+
+    if (!jsonData || jsonData.length === 0) {
+      throw new Error('The active spreadsheet sheet contains no data.');
+    }
+
+    app.updateProgress(60, 'Generating tabular layout and calculating column widths...');
+
+    const { PDFDocument, StandardFonts, rgb } = PDFLib;
     const pdfDoc = await PDFDocument.create();
+
+    const orientation = document.getElementById('e2pOrientation')?.value || 'landscape';
+    const isLandscape = orientation === 'landscape';
+
+    const pageWidth = isLandscape ? 841.89 : 595.28;
+    const pageHeight = isLandscape ? 595.28 : 841.89;
+
     const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-    const orientation = document.getElementById('excelPdfOrientation')?.value || 'landscape';
-    const showGrid = document.getElementById('excelShowGridlines')?.checked ?? true;
-    const highlightHeader = document.getElementById('excelHeaderRow')?.checked ?? true;
-
-    let [pageWidth, pageHeight] = PageSizes.A4;
-    if (orientation === 'landscape') {
-      const temp = pageWidth; pageWidth = pageHeight; pageHeight = temp;
-    }
-
     const margin = 36;
     const availableWidth = pageWidth - (margin * 2);
-    const availableHeight = pageHeight - (margin * 2);
 
-    for (let sheetIdx = 0; sheetIdx < sheetNames.length; sheetIdx++) {
-      const sheetName = sheetNames[sheetIdx];
-      const worksheet = workbook.Sheets[sheetName];
-      const rawData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+    // Calculate columns
+    const maxCols = Math.min(Math.max(...jsonData.map(row => row.length)), 12);
+    if (maxCols === 0) throw new Error('Spreadsheet has 0 columns.');
 
-      if (!rawData || rawData.length === 0) continue;
+    const colWidth = availableWidth / maxCols;
+    const rowHeight = 22;
+    const fontSize = maxCols > 8 ? 8 : 9;
 
-      let maxCols = 0;
-      rawData.forEach(row => {
-        if (row.length > maxCols) maxCols = row.length;
-      });
-      if (maxCols === 0) continue;
+    let currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
+    let currentY = pageHeight - margin - 30;
 
-      const colWidth = Math.min(180, Math.max(70, availableWidth / maxCols));
-      const rowHeight = 22;
-      const fontSize = 9;
+    // Draw Sheet Title
+    currentPage.drawText(`Sheet: ${PDFEngine.sanitizeWinAnsi(sheetNames[0])}`, {
+      x: margin,
+      y: pageHeight - margin - 15,
+      size: 12,
+      font: fontBold,
+      color: rgb(0.1, 0.15, 0.3)
+    });
 
-      let currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
-      let currentY = pageHeight - margin - 20;
+    const rowsPerPage = Math.floor((currentY - margin) / rowHeight);
+    let rowIndex = 0;
 
-      // Draw Sheet Title
-      currentPage.drawText(`Sheet: ${sheetName}`, {
-        x: margin,
-        y: pageHeight - margin,
-        size: 13,
-        font: fontBold,
-        color: rgb(0.1, 0.15, 0.25)
-      });
+    for (let r = 0; r < jsonData.length; r++) {
+      const rowData = jsonData[r];
 
-      for (let r = 0; r < rawData.length; r++) {
-        if (currentY < margin + rowHeight) {
-          currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
-          currentY = pageHeight - margin - 20;
-        }
-
-        const row = rawData[r];
-        const isHeader = r === 0 && highlightHeader;
-
-        // Background highlight for header or zebra
-        if (isHeader) {
-          currentPage.drawRectangle({
-            x: margin,
-            y: currentY - 4,
-            width: maxCols * colWidth,
-            height: rowHeight,
-            color: rgb(0.9, 0.94, 1.0)
-          });
-        } else if (r % 2 === 1) {
-          currentPage.drawRectangle({
-            x: margin,
-            y: currentY - 4,
-            width: maxCols * colWidth,
-            height: rowHeight,
-            color: rgb(0.97, 0.98, 0.99)
-          });
-        }
-
-        // Draw Cells
-        for (let c = 0; c < maxCols; c++) {
-          const cellVal = row[c] !== undefined && row[c] !== null ? String(row[c]) : '';
-          const cellX = margin + (c * colWidth);
-
-          // Gridlines
-          if (showGrid) {
-            currentPage.drawRectangle({
-              x: cellX,
-              y: currentY - 4,
-              width: colWidth,
-              height: rowHeight,
-              borderColor: rgb(0.85, 0.88, 0.92),
-              borderWidth: 0.75
-            });
-          }
-
-          if (cellVal) {
-            // Truncate cell text if longer than column
-            let textToDraw = cellVal;
-            const fontToUse = isHeader ? fontBold : fontRegular;
-            while (textToDraw.length > 3 && fontToUse.widthOfTextAtSize(textToDraw, fontSize) > colWidth - 8) {
-              textToDraw = textToDraw.substring(0, textToDraw.length - 2) + '…';
-            }
-
-            currentPage.drawText(textToDraw, {
-              x: cellX + 4,
-              y: currentY + 3,
-              size: fontSize,
-              font: fontToUse,
-              color: isHeader ? rgb(0.08, 0.12, 0.22) : rgb(0.18, 0.22, 0.3)
-            });
-          }
-        }
-
-        currentY -= rowHeight;
+      // New Page check
+      if (currentY <= margin + rowHeight) {
+        currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
+        currentY = pageHeight - margin - 20;
       }
+
+      const isHeader = r === 0;
+
+      // Row background
+      if (isHeader) {
+        currentPage.drawRectangle({
+          x: margin,
+          y: currentY - rowHeight + 4,
+          width: availableWidth,
+          height: rowHeight,
+          color: rgb(0.9, 0.93, 0.98)
+        });
+      } else if (r % 2 === 1) {
+        currentPage.drawRectangle({
+          x: margin,
+          y: currentY - rowHeight + 4,
+          width: availableWidth,
+          height: rowHeight,
+          color: rgb(0.98, 0.98, 0.99)
+        });
+      }
+
+      // Draw Cells
+      for (let c = 0; c < maxCols; c++) {
+        let rawVal = rowData[c] !== undefined && rowData[c] !== null ? String(rowData[c]) : '';
+        const val = PDFEngine.sanitizeWinAnsi(rawVal);
+        const cellX = margin + (c * colWidth);
+
+        // Cell border
+        currentPage.drawRectangle({
+          x: cellX,
+          y: currentY - rowHeight + 4,
+          width: colWidth,
+          height: rowHeight,
+          borderWidth: 0.5,
+          borderColor: rgb(0.85, 0.88, 0.92),
+          color: undefined // transparent
+        });
+
+        // Truncate cell text if exceeding column with WinAnsi safety
+        let truncated = val;
+        while (truncated.length > 0 && fontRegular.widthOfTextAtSize(truncated + '..', fontSize) > colWidth - 8) {
+          truncated = truncated.slice(0, -1);
+        }
+        if (truncated !== val && truncated.length > 0) truncated += '..';
+
+        if (truncated) {
+          currentPage.drawText(truncated, {
+            x: cellX + 4,
+            y: currentY - 12,
+            size: fontSize,
+            font: isHeader ? fontBold : fontRegular,
+            color: isHeader ? rgb(0.08, 0.12, 0.25) : rgb(0.2, 0.2, 0.25)
+          });
+        }
+      }
+
+      currentY -= rowHeight;
+      rowIndex++;
     }
 
-    app.updateProgress(90, 'Saving converted spreadsheet PDF...');
+    app.updateProgress(90, 'Compiling Excel PDF document...');
     const pdfBytes = await pdfDoc.save();
 
-    let outName = document.getElementById('excelPdfFilename')?.value?.trim() || `${file.name.replace(/\.[^/.]+$/, "")}.pdf`;
+    let outName = document.getElementById('e2pFilename')?.value?.trim() || `${file.name.replace(/\.[^/.]+$/, "")}.pdf`;
     if (!outName.toLowerCase().endsWith('.pdf')) outName += '.pdf';
 
     app.updateProgress(100, 'Done!');
@@ -186,7 +180,7 @@ window.Tools.excelToPdf = {
       data: pdfBytes,
       filename: outName,
       mimeType: 'application/pdf',
-      summary: `Successfully converted Excel spreadsheet to PDF (${pdfDoc.getPageCount()} pages)`
+      summary: `Successfully converted ${sheetNames[0]} (${jsonData.length} rows) into ${pdfDoc.getPageCount()} pages`
     };
   }
 };
