@@ -371,12 +371,21 @@ function renderDashboard(data) {
         <div style="display: flex; align-items: center; gap: 1rem;">
           <span class="tool-count-pill">${count} runs</span>
           <label class="switch">
-            <input type="checkbox" checked data-tool-toggle="${t.id}">
+            <input type="checkbox" checked data-tool-toggle="${t.id}" data-tool-name="${t.name}">
             <span class="slider"></span>
           </label>
         </div>
       `;
       toolListContainer.appendChild(row);
+    });
+
+    // Bind switch toggles
+    toolListContainer.querySelectorAll('input[data-tool-toggle]').forEach(chk => {
+      chk.addEventListener('change', (e) => {
+        const toolName = e.target.getAttribute('data-tool-name') || 'Tool';
+        const isEnabled = e.target.checked;
+        showToast(`${toolName} is now ${isEnabled ? 'enabled' : 'temporarily disabled'}`, isEnabled ? 'success' : 'warning');
+      });
     });
   }
 
