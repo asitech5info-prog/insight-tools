@@ -7,3 +7,9 @@ temp/
 playwright-report/
 test-results/
 test_connection.py
+tests/fixtures/*.pdf
+tests/fixtures/*.docx
+tests/fixtures/*.xlsx
+tests/fixtures/*.pptx
+tests/fixtures/*.jpg
+tests/fixtures/*.png
