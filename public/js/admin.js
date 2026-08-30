@@ -1,151 +1,198 @@
-// Admin Console Controller
-document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('insight_admin_token');
-  if (token) {
-    showAdminDashboard();
-  } else {
-    showLoginScreen();
-  }
+// Admin Console & Telemetry Controller
+let adminToken = localStorage.getItem('insight_admin_token');
+let refreshInterval = null;
 
-  bindAdminEvents();
+document.addEventListener('DOMContentLoaded', () => {
+  initAdmin();
 });
 
-function showLoginScreen() {
-  document.getElementById('adminLoginScreen').style.display = 'flex';
-  document.getElementById('adminApp').style.display = 'none';
-}
-
-function showAdminDashboard() {
-  document.getElementById('adminLoginScreen').style.display = 'none';
-  document.getElementById('adminApp').style.display = 'block';
-  fetchAdminStats();
-}
-
-function bindAdminEvents() {
-  // Login Form Submission
+function initAdmin() {
+  const loginScreen = document.getElementById('adminLoginScreen');
+  const adminApp = document.getElementById('adminApp');
   const loginForm = document.getElementById('adminLoginForm');
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const pwd = document.getElementById('adminPasswordInput').value;
-      try {
-        const res = await fetch('/api/admin/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password: pwd })
-        });
-        const data = await res.json();
-        if (data.success) {
-          localStorage.setItem('insight_admin_token', data.token);
-          showAdminDashboard();
-          showToast('Authenticated successfully', 'success');
-        } else {
-          showToast(data.error || 'Authentication failed', 'error');
-        }
-      } catch (err) {
-        showToast('Server connection error', 'error');
-      }
-    });
+  const btnLogout = document.getElementById('btnAdminLogout');
+  const btnClearRAM = document.getElementById('btnClearRAM');
+  const btnCleanStorage = document.getElementById('btnCleanStorage');
+  const btnSaveConfig = document.getElementById('btnSaveConfig');
+  const btnRefreshStats = document.getElementById('btnRefreshStats');
+
+  // Check existing session
+  if (adminToken) {
+    showDashboard();
+  } else {
+    showLogin();
   }
 
-  // Logout
-  document.getElementById('btnAdminLogout')?.addEventListener('click', () => {
-    localStorage.removeItem('insight_admin_token');
-    showLoginScreen();
-    showToast('Logged out', 'info');
-  });
-
-  // Refresh Stats
-  document.getElementById('btnRefreshStats')?.addEventListener('click', () => {
-    fetchAdminStats();
-    showToast('Stats refreshed', 'info');
-  });
-
-  // Purge RAM Memory (Render 512MB Optimization)
-  document.getElementById('btnPurgeRAM')?.addEventListener('click', async () => {
+  // Handle Login
+  loginForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const password = document.getElementById('adminPasswordInput').value;
+    const btn = loginForm.querySelector('button[type="submit"]');
+    const originalText = btn.innerHTML;
+    
     try {
-      const res = await fetch('/api/admin/clear-cache', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        showToast(data.message, 'success');
-        fetchAdminStats();
-      }
-    } catch (e) {
-      showToast('Purge request failed', 'error');
-    }
-  });
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+      btn.disabled = true;
 
-  // Clean Storage Buttons
-  const cleanStorageHandler = async () => {
-    try {
-      const res = await fetch('/api/admin/clean-storage', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        showToast(data.message, 'success');
-        fetchAdminStats();
-      }
-    } catch (e) {
-      showToast('Storage cleanup failed', 'error');
-    }
-  };
-
-  document.getElementById('btnCleanStorage')?.addEventListener('click', cleanStorageHandler);
-  document.getElementById('btnCleanStorageCard')?.addEventListener('click', cleanStorageHandler);
-
-  // Save Config
-  document.getElementById('btnSaveConfig')?.addEventListener('click', async () => {
-    const maxFileSize = parseInt(document.getElementById('cfgMaxFileSize').value, 10);
-    const maintenance = document.getElementById('cfgMaintenance').checked;
-
-    try {
-      const res = await fetch('/api/admin/config', {
+      const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        adminToken = data.token;
+        localStorage.setItem('insight_admin_token', adminToken);
+        showToast('Authenticated successfully', 'success');
+        showDashboard();
+      } else {
+        showToast(data.error || 'Invalid credentials', 'error');
+      }
+    } catch (err) {
+      showToast('Network error during authentication', 'error');
+    } finally {
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  });
+
+  // Handle Logout
+  btnLogout?.addEventListener('click', () => {
+    adminToken = null;
+    localStorage.removeItem('insight_admin_token');
+    if (refreshInterval) clearInterval(refreshInterval);
+    showLogin();
+    showToast('Logged out securely', 'info');
+  });
+
+  // Quick Action: Clear RAM
+  btnClearRAM?.addEventListener('click', async () => {
+    try {
+      btnClearRAM.disabled = true;
+      const res = await fetch('/api/admin/clear-cache', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(`Memory Purged: ${data.freedMB || 0} MB released`, 'success');
+        fetchStats();
+      } else {
+        showToast(data.error || 'Failed to purge memory', 'error');
+      }
+    } catch (_) {
+      showToast('Network error during RAM purge', 'error');
+    } finally {
+      btnClearRAM.disabled = false;
+    }
+  });
+
+  // Quick Action: Clean Temp Storage
+  btnCleanStorage?.addEventListener('click', async () => {
+    try {
+      btnCleanStorage.disabled = true;
+      const res = await fetch('/api/admin/clean-storage', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(`Storage cleaned: ${data.removedFilesCount} files removed (${data.freedMB} MB freed)`, 'success');
+        fetchStats();
+      } else {
+        showToast(data.error || 'Failed to clean storage', 'error');
+      }
+    } catch (_) {
+      showToast('Network error during storage cleanup', 'error');
+    } finally {
+      btnCleanStorage.disabled = false;
+    }
+  });
+
+  // Save Settings
+  btnSaveConfig?.addEventListener('click', async () => {
+    const maxFileSize = parseInt(document.getElementById('cfgMaxFileSize').value, 10);
+    const maintenanceMode = document.getElementById('cfgMaintenanceMode').checked;
+    const announcement = document.getElementById('cfgAnnouncement').value.trim();
+
+    try {
+      btnSaveConfig.disabled = true;
+      const res = await fetch('/api/admin/config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
         body: JSON.stringify({
           config: {
             maxFileSizeMB: maxFileSize,
-            maintenanceMode: maintenance
+            maintenanceMode,
+            announcement
           }
         })
       });
       const data = await res.json();
-      if (data.success) {
-        showToast('Configuration updated', 'success');
+      if (res.ok && data.success) {
+        showToast('Configuration updated instantly', 'success');
+      } else {
+        showToast(data.error || 'Failed to update configuration', 'error');
       }
-    } catch (e) {
-      showToast('Failed to update config', 'error');
+    } catch (_) {
+      showToast('Network error while saving settings', 'error');
+    } finally {
+      btnSaveConfig.disabled = false;
     }
   });
 
-  // Clear Audit Logs View
-  document.getElementById('btnClearLogs')?.addEventListener('click', () => {
-    document.getElementById('auditLogsBody').innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">No activity recorded yet</td></tr>';
+  // Manual Refresh
+  btnRefreshStats?.addEventListener('click', () => {
+    fetchStats();
+    showToast('Metrics updated', 'info');
   });
 }
 
-async function fetchAdminStats() {
+function showLogin() {
+  document.getElementById('adminLoginScreen').style.display = 'flex';
+  document.getElementById('adminApp').style.display = 'none';
+}
+
+function showDashboard() {
+  document.getElementById('adminLoginScreen').style.display = 'none';
+  document.getElementById('adminApp').style.display = 'block';
+  fetchStats();
+  if (refreshInterval) clearInterval(refreshInterval);
+  refreshInterval = setInterval(fetchStats, 10000); // 10s live pulse
+}
+
+async function fetchStats() {
+  if (!adminToken) return;
+
   try {
-    const res = await fetch('/api/admin/stats');
-    if (!res.ok) {
-      if (res.status === 401) {
-        localStorage.removeItem('insight_admin_token');
-        showLoginScreen();
-      }
+    const res = await fetch('/api/admin/stats', {
+      headers: { 'Authorization': `Bearer ${adminToken}` }
+    });
+
+    if (res.status === 401) {
+      adminToken = null;
+      localStorage.removeItem('insight_admin_token');
+      showLogin();
       return;
     }
 
     const data = await res.json();
-    renderStats(data);
+    if (res.ok) {
+      renderDashboard(data);
+    }
   } catch (err) {
-    console.error('Failed to load admin stats', err);
+    console.error('Error fetching admin statistics:', err);
   }
 }
 
-function renderStats(data) {
-  // 1. Top Metrics
-  document.getElementById('valTotalConversions').textContent = data.totalConversions.toLocaleString();
-  const mbProcessed = (data.totalBytesProcessed / (1024 * 1024)).toFixed(1);
-  document.getElementById('valDataProcessed').textContent = `${mbProcessed} MB`;
+function renderDashboard(data) {
+  // 1. Update Core Metrics
+  document.getElementById('valTotalConversions').textContent = (data.totalConversions || 0).toLocaleString();
+  document.getElementById('valDataProcessed').textContent = formatBytes(data.totalBytesProcessed || 0);
 
   if (data.systemInfo) {
     const info = data.systemInfo;
@@ -201,7 +248,11 @@ function renderStats(data) {
       { id: 'unlock', name: 'Unlock PDF', icon: 'fa-lock-open', color: '#10b981' },
       { id: 'sign', name: 'Sign PDF', icon: 'fa-signature', color: '#4f46e5' },
       { id: 'bg-remover', name: 'Remove Background', icon: 'fa-wand-magic-sparkles', color: '#a855f7' },
-      { id: 'extract-text', name: 'PDF to Text', icon: 'fa-align-left', color: '#14b8a6' }
+      { id: 'extract-text', name: 'PDF to Text', icon: 'fa-align-left', color: '#14b8a6' },
+      { id: 'ocr-pdf', name: 'OCR Recognition', icon: 'fa-file-invoice', color: '#0ea5e9' },
+      { id: 'redact', name: 'Redact PDF', icon: 'fa-square-full', color: '#dc2626' },
+      { id: 'metadata', name: 'Edit Metadata', icon: 'fa-tags', color: '#8b5cf6' },
+      { id: 'grayscale', name: 'PDF to Grayscale', icon: 'fa-circle-half-stroke', color: '#64748b' }
     ];
 
     tools.forEach(t => {
@@ -230,51 +281,60 @@ function renderStats(data) {
     });
   }
 
-  // 3. Render Audit Table
-  const logsBody = document.getElementById('auditLogsBody');
-  if (logsBody && data.recentLogs) {
-    logsBody.innerHTML = '';
-    if (data.recentLogs.length === 0) {
-      logsBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">No activity recorded yet</td></tr>';
-    } else {
-      data.recentLogs.forEach(log => {
-        const timeStr = new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">${timeStr}</span></td>
-          <td><span class="tool-badge-pill">${log.tool}</span></td>
-          <td><strong style="color: var(--text-primary); font-size: 0.88rem;">${log.itemType || 'Client Stream'}</strong></td>
-          <td>${log.size || '1.2 MB'}</td>
-          <td><span style="font-family: var(--font-mono); font-size: 0.82rem;">${log.duration || '400ms'}</span></td>
-          <td><span class="status-pill status-${log.status || 'success'}">${log.status || 'success'}</span></td>
-        `;
-        logsBody.appendChild(tr);
-      });
+  // 3. Render Audit Log Table
+  const auditBody = document.getElementById('auditLogsBody');
+  if (auditBody && data.logs) {
+    auditBody.innerHTML = '';
+    data.logs.forEach(log => {
+      const tr = document.createElement('tr');
+      const timeStr = new Date(log.timestamp).toLocaleTimeString();
+      const statusClass = log.status === 'OK' ? 'badge-success' : 'badge-warning';
+      
+      tr.innerHTML = `
+        <td><span style="font-family: monospace; font-size: 0.8rem;">${timeStr}</span></td>
+        <td><strong>${log.action}</strong></td>
+        <td>${log.details}</td>
+        <td><span class="status-badge ${statusClass}">${log.status}</span></td>
+      `;
+      auditBody.appendChild(tr);
+    });
+  }
+
+  // 4. Update Config Controls
+  if (data.config) {
+    const cfg = data.config;
+    if (document.getElementById('cfgMaxFileSize')) {
+      document.getElementById('cfgMaxFileSize').value = cfg.maxFileSizeMB || 100;
+    }
+    if (document.getElementById('cfgMaintenanceMode')) {
+      document.getElementById('cfgMaintenanceMode').checked = !!cfg.maintenanceMode;
+    }
+    if (document.getElementById('cfgAnnouncement')) {
+      document.getElementById('cfgAnnouncement').value = cfg.announcement || '';
     }
   }
 }
 
-function showToast(message, type = 'info') {
+function showToast(msg, type = 'info') {
   const container = document.getElementById('toastContainer');
   if (!container) return;
 
   const toast = document.createElement('div');
-  toast.className = `toast-message toast-${type}`;
-
-  let icon = 'fa-circle-info';
-  if (type === 'success') icon = 'fa-circle-check';
-  if (type === 'error') icon = 'fa-circle-xmark';
-
-  toast.innerHTML = `
-    <i class="fa-solid ${icon}"></i>
-    <span>${message}</span>
-  `;
-
+  toast.className = `admin-toast ${type}`;
+  const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-triangle-exclamation' : 'fa-info-circle';
+  toast.innerHTML = `<i class="fa-solid ${icon}"></i><span>${msg}</span>`;
   container.appendChild(toast);
 
   setTimeout(() => {
     toast.style.opacity = '0';
-    toast.style.transform = 'translateX(100%)';
     setTimeout(() => toast.remove(), 300);
   }, 3500);
+}
+
+function formatBytes(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
