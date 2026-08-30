@@ -186,7 +186,7 @@ class InsightApp {
     this.btnDownloadPrimary?.addEventListener('click', (e) => {
       e.preventDefault();
       if (this.lastResultBlob) {
-        PDFEngine.downloadFile(this.lastResultBlob, this.lastResultFilename, this.lastResultMimeType);
+        PDFEngine.saveBlob(this.lastResultBlob, this.lastResultFilename);
         this.showToast('Download started! Data purged from memory.', 'success');
 
         // Automatically purge in-memory buffers after task completion download
@@ -231,7 +231,11 @@ class InsightApp {
         'unlock': window.Tools.unlock,
         'sign': window.Tools.sign,
         'bg-remover': window.Tools.bgRemover,
-        'extract-text': window.Tools.extractText
+        'extract-text': window.Tools.extractText,
+        'ocr-pdf': window.Tools.ocrPdf,
+        'redact': window.Tools.redact,
+        'metadata': window.Tools.metadata,
+        'grayscale': window.Tools.grayscale
       };
 
       const tool = toolMap[hash];
@@ -452,10 +456,10 @@ class InsightApp {
       previewBox.appendChild(img);
     } else {
       const canvas = document.createElement('canvas');
-      const ok = await PDFEngine.renderPageToCanvas(file, 1, canvas, 0.35);
+      const ok = await PDFEngine.renderPageThumbnail(file, 1, 200);
       if (ok) {
         previewBox.innerHTML = '';
-        previewBox.appendChild(canvas);
+        previewBox.appendChild(ok);
       }
     }
   }
