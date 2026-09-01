@@ -66,6 +66,9 @@ class InsightApp {
     this.optionsContainer = document.getElementById('optionsContainer');
 
     this.toolSearchInput = document.getElementById('toolSearchInput');
+    this.btnSearchClear = document.getElementById('btnSearchClear');
+    this.navToolsDropdown = document.getElementById('navToolsDropdown');
+    this.btnNavTools = document.getElementById('btnNavTools');
     this.themeToggleBtn = document.getElementById('themeToggleBtn');
     this.btnBackToHome = document.getElementById('btnBackToHome');
     this.navLogo = document.getElementById('navLogo');
@@ -91,15 +94,85 @@ class InsightApp {
     });
     this.btnBackToHome?.addEventListener('click', () => this.navigateHome());
 
+    // Tools Mega-Menu Dropdown Toggle
+    this.btnNavTools?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.navToolsDropdown?.classList.toggle('open');
+    });
+
+    // Close Mega-Menu on outside click
+    document.addEventListener('click', (e) => {
+      if (!this.navToolsDropdown?.contains(e.target)) {
+        this.navToolsDropdown?.classList.remove('open');
+      }
+    });
+
+    // Close Mega-Menu when clicking an item
+    document.querySelectorAll('.mega-menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        this.navToolsDropdown?.classList.remove('open');
+      });
+    });
+
     // Routing by Hash Change
-    window.addEventListener('hashchange', () => this.handleRoute());
+    window.addEventListener('hashchange', () => {
+      this.navToolsDropdown?.classList.remove('open');
+      this.handleRoute();
+    });
 
     // Clean memory on window unload/hide
     window.addEventListener('beforeunload', () => this.purgeSessionData());
     window.addEventListener('pagehide', () => this.purgeSessionData());
 
     // Search input
-    this.toolSearchInput?.addEventListener('input', (e) => this.filterTools(e.target.value));
+    this.toolSearchInput?.addEventListener('input', (e) => {
+      const q = e.target.value;
+      if (this.btnSearchClear) {
+        this.btnSearchClear.style.display = q ? 'flex' : 'none';
+      }
+      this.filterTools(q);
+    });
+
+    // Clear Search Button
+    this.btnSearchClear?.addEventListener('click', () => {
+      if (this.toolSearchInput) {
+        this.toolSearchInput.value = '';
+        this.toolSearchInput.focus();
+      }
+      if (this.btnSearchClear) {
+        this.btnSearchClear.style.display = 'none';
+      }
+      this.filterTools('');
+    });
+
+    // Quick Suggestion Chips
+    document.querySelectorAll('.quick-tag-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const query = chip.getAttribute('data-query') || '';
+        if (this.toolSearchInput) {
+          this.toolSearchInput.value = query;
+        }
+        if (this.btnSearchClear) {
+          this.btnSearchClear.style.display = query ? 'flex' : 'none';
+        }
+        this.filterTools(query);
+      });
+    });
+
+    // FAQ Accordion Toggles
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        if (item) {
+          const wasOpen = item.classList.contains('open');
+          // Optional: close other open items for cleaner accordion behavior
+          document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+          if (!wasOpen) {
+            item.classList.add('open');
+          }
+        }
+      });
+    });
 
     // Category Tabs Filter
     document.querySelectorAll('.filter-tab-btn').forEach(tab => {
@@ -253,7 +326,10 @@ class InsightApp {
     this.purgeSessionData();
     this.currentTool = null;
     if (this.homeView) this.homeView.style.display = 'block';
-    if (this.workspaceSection) this.workspaceSection.classList.remove('active');
+    if (this.workspaceSection) {
+      this.workspaceSection.classList.remove('active');
+      this.workspaceSection.style.display = 'none';
+    }
     document.title = 'Insight Tools - All-In-One Free & Secure PDF Suite';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -292,7 +368,10 @@ class InsightApp {
     }
 
     if (this.homeView) this.homeView.style.display = 'none';
-    if (this.workspaceSection) this.workspaceSection.classList.add('active');
+    if (this.workspaceSection) {
+      this.workspaceSection.classList.add('active');
+      this.workspaceSection.style.display = 'block';
+    }
 
     this.showDropzone();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -709,6 +788,9 @@ class InsightApp {
   /* -------------------------------------------------------------------------- */
   filterTools(query) {
     const q = query.toLowerCase().trim();
+    if (this.btnSearchClear) {
+      this.btnSearchClear.style.display = q ? 'flex' : 'none';
+    }
     const cards = document.querySelectorAll('.tool-card');
     cards.forEach(card => {
       const title = card.querySelector('.tool-title')?.textContent.toLowerCase() || '';
