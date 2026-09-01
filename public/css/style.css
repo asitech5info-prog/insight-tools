@@ -1,7 +1,7 @@
 /* ==========================================================================
-   Insight Tools - Design System & Modern Global Styles
+   Insight Tools - Premier Design System & Aesthetics
    Inspired by Smallpdf, Xodo, and PDFHouse
-   Pure Client-Side, 100% Free, Zero Subscriptions & Zero Login Walls
+   100% Free Forever • Zero Subscriptions • Zero Login Walls • Privacy First
    ========================================================================== */
 
 :root {
@@ -17,7 +17,7 @@
   --bg-card-hover: #ffffff;
   --bg-input: #f1f5f9;
   --bg-elevated: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.92);
+  --bg-glass: rgba(255, 255, 255, 0.94);
   --bg-surface-subtle: #f8fafc;
 
   --text-primary: #0f172a;
@@ -29,41 +29,18 @@
   --border-subtle: #edf2f7;
   --border-focus: rgba(99, 102, 241, 0.4);
 
-  /* Primary Brand Accents (Smallpdf & Xodo Inspiration) */
+  /* Primary Brand Accents */
   --primary: #4f46e5;
   --primary-hover: #4338ca;
   --primary-light: rgba(79, 70, 229, 0.08);
   --primary-glow: rgba(79, 70, 229, 0.25);
-
-  /* Curated Tool Category Accents */
-  --color-word: #2563eb;
-  --color-word-bg: rgba(37, 99, 235, 0.1);
-  --color-excel: #10b981;
-  --color-excel-bg: rgba(16, 185, 129, 0.1);
-  --color-ppt: #ef4444;
-  --color-ppt-bg: rgba(239, 68, 68, 0.1);
-  --color-merge: #ef4444;
-  --color-merge-bg: rgba(239, 68, 68, 0.1);
-  --color-split: #f59e0b;
-  --color-split-bg: rgba(245, 158, 11, 0.1);
-  --color-organize: #8b5cf6;
-  --color-organize-bg: rgba(139, 92, 246, 0.1);
-  --color-compress: #0d9488;
-  --color-compress-bg: rgba(13, 148, 136, 0.1);
-  --color-images: #ec4899;
-  --color-images-bg: rgba(236, 72, 153, 0.1);
-  --color-sign: #6366f1;
-  --color-sign-bg: rgba(99, 102, 241, 0.1);
-  --color-security: #dc2626;
-  --color-security-bg: rgba(220, 38, 38, 0.1);
-  --color-ocr: #0ea5e9;
-  --color-ocr-bg: rgba(14, 165, 233, 0.1);
 
   --accent-red: #ef4444;
   --accent-green: #10b981;
   --accent-amber: #f59e0b;
   --accent-purple: #8b5cf6;
   --accent-blue: #3b82f6;
+  --accent-teal: #0d9488;
 
   /* Shadows */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
@@ -71,14 +48,13 @@
   --shadow-md: 0 6px 12px -2px rgba(0, 0, 0, 0.06), 0 3px 6px -2px rgba(0, 0, 0, 0.04);
   --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.08), 0 6px 12px -4px rgba(0, 0, 0, 0.04);
   --shadow-xl: 0 20px 30px -6px rgba(0, 0, 0, 0.1), 0 10px 16px -6px rgba(0, 0, 0, 0.05);
-  --shadow-card-hover: 0 20px 35px -8px rgba(15, 23, 42, 0.12);
 
   /* Border Radii */
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-2xl: 30px;
   --radius-full: 9999px;
 
   /* Transitions */
@@ -89,19 +65,19 @@
 
 /* Dark Mode Overrides */
 [data-theme="dark"] {
-  --bg-primary: #090d16;
-  --bg-secondary: #0f172a;
-  --bg-card: #131c31;
-  --bg-card-hover: #18233d;
-  --bg-input: #172138;
-  --bg-elevated: #1b2644;
-  --bg-glass: rgba(15, 23, 42, 0.9);
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #101626;
+  --bg-card: #141c30;
+  --bg-card-hover: #18233c;
+  --bg-input: #182238;
+  --bg-elevated: #1a2540;
+  --bg-glass: rgba(16, 22, 38, 0.92);
   --bg-surface-subtle: #0d1424;
 
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
-  --text-inverse: #090d16;
+  --text-inverse: #0a0e1a;
 
   --border-color: rgba(255, 255, 255, 0.09);
   --border-subtle: rgba(255, 255, 255, 0.05);
@@ -117,7 +93,6 @@
   --shadow-md: 0 6px 12px -2px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.55);
   --shadow-xl: 0 20px 30px -6px rgba(0, 0, 0, 0.65);
-  --shadow-card-hover: 0 20px 35px -8px rgba(0, 0, 0, 0.7);
 }
 
 /* Base Reset & Core Typography */
@@ -135,13 +110,22 @@ html {
 body {
   font-family: var(--font-body);
   background-color: var(--bg-primary);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.1), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 10%, rgba(239, 68, 68, 0.04), transparent 60%);
   color: var(--text-primary);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  line-height: 1.55;
+  line-height: 1.5;
   transition: background-color var(--transition-normal), color var(--transition-normal);
   overflow-x: hidden;
+}
+
+[data-theme="dark"] body {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.18), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 10%, rgba(239, 68, 68, 0.06), transparent 60%);
 }
 
 h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .btn-download-main {
@@ -155,8 +139,8 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   background-color: var(--bg-glass);
   border-bottom: 1px solid var(--border-color);
   transition: all var(--transition-normal);
@@ -180,21 +164,21 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   color: var(--text-primary);
   font-weight: 800;
   font-size: 1.35rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   flex-shrink: 0;
 }
 
 .logo-icon {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, #ef4444 0%, #6366f1 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.3rem;
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
   transition: transform var(--transition-normal);
 }
 
@@ -219,7 +203,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .nav-dropdown-wrapper {
@@ -230,13 +214,13 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.5rem 0.9rem;
+  padding: 0.5rem 0.85rem;
   border-radius: var(--radius-full);
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-secondary);
   font-family: var(--font-main);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
@@ -249,7 +233,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 }
 
 .nav-link-btn i.fa-chevron-down {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   transition: transform var(--transition-fast);
 }
 
@@ -257,7 +241,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   transform: rotate(180deg);
 }
 
-/* Mega-Menu Dropdown Panel (Smallpdf/Xodo style) */
+/* Mega-Menu Dropdown Panel */
 .tools-mega-menu {
   position: absolute;
   top: calc(100% + 10px);
@@ -285,7 +269,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 }
 
 .mega-menu-col h4 {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -332,7 +316,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 .nav-quick-links {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 @media (max-width: 1100px) {
@@ -345,20 +329,20 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 .nav-free-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.8rem;
-  background: rgba(16, 185, 129, 0.12);
+  gap: 0.45rem;
+  padding: 0.38rem 0.85rem;
+  background: rgba(16, 185, 129, 0.1);
   border: 1px solid rgba(16, 185, 129, 0.25);
   border-radius: var(--radius-full);
   color: var(--accent-green);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
 .nav-free-badge i {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
 }
 
 /* Nav Actions */
@@ -373,21 +357,21 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   background: var(--bg-input);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   transition: all var(--transition-normal);
 }
 
 .theme-toggle-btn:hover {
   background: var(--bg-card-hover);
   border-color: var(--primary);
-  transform: rotate(30deg) scale(1.05);
+  transform: rotate(30deg) scale(1.06);
 }
 
 /* ==========================================================================
@@ -398,30 +382,30 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   max-width: 1400px;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
+  padding: 1.5rem 1.5rem 3.5rem;
 }
 
 /* ==========================================================================
-   Hero Section (Smallpdf & Xodo Style)
+   Hero Section (Compact, Modern Smallpdf/Xodo Style)
    ========================================================================== */
 .hero-section {
   text-align: center;
-  padding: 3rem 1rem 3.5rem;
+  padding: 2.25rem 1rem 2.25rem;
   position: relative;
 }
 
 .hero-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.45rem 1.25rem;
+  gap: 0.55rem;
+  padding: 0.4rem 1.15rem;
   border-radius: var(--radius-full);
   background: var(--primary-light);
   border: 1px solid var(--primary-glow);
   color: var(--primary);
-  font-size: 0.88rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+  margin-bottom: 1.15rem;
 }
 
 .pulse-dot {
@@ -435,17 +419,17 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 
 @keyframes pulse-green {
   0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  70% { transform: scale(1); box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
 .hero-title {
-  font-size: 3.4rem;
+  font-size: 2.85rem;
   font-weight: 800;
   letter-spacing: -0.035em;
-  line-height: 1.15;
-  margin-bottom: 1.2rem;
-  max-width: 900px;
+  line-height: 1.16;
+  margin-bottom: 0.75rem;
+  max-width: 860px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -457,17 +441,17 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 }
 
 .hero-subtitle {
-  font-size: 1.18rem;
+  font-size: 1.05rem;
   color: var(--text-secondary);
-  max-width: 720px;
-  margin: 0 auto 2.25rem;
-  line-height: 1.6;
+  max-width: 680px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.55;
 }
 
 /* Floating Search Bar (Smallpdf & PDFHouse Inspiration) */
 .hero-search-container {
-  max-width: 640px;
-  margin: 0 auto 1.5rem;
+  max-width: 580px;
+  margin: 0 auto 1rem;
 }
 
 .hero-search-wrapper {
@@ -475,23 +459,23 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   display: flex;
   align-items: center;
   background: var(--bg-card);
-  border: 2px solid var(--border-color);
+  border: 1.5px solid var(--border-color);
   border-radius: var(--radius-full);
-  box-shadow: var(--shadow-lg);
-  padding: 0.35rem 0.5rem 0.35rem 1.4rem;
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.06);
+  padding: 0.3rem 0.5rem 0.3rem 1.25rem;
   transition: all var(--transition-normal);
 }
 
 .hero-search-wrapper:focus-within {
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px var(--primary-light), var(--shadow-xl);
-  transform: translateY(-2px);
+  box-shadow: 0 0 0 3px var(--primary-light), var(--shadow-lg);
+  transform: translateY(-1px);
 }
 
 .hero-search-icon {
   color: var(--text-muted);
-  font-size: 1.15rem;
-  margin-right: 0.85rem;
+  font-size: 1.05rem;
+  margin-right: 0.75rem;
   flex-shrink: 0;
 }
 
@@ -501,7 +485,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   background: transparent;
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 500;
   outline: none;
 }
@@ -515,14 +499,14 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   background: var(--bg-input);
   border: none;
   color: var(--text-secondary);
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-right: 0.5rem;
+  margin-right: 0.4rem;
   transition: all var(--transition-fast);
 }
 
@@ -537,23 +521,23 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
 }
 
 .quick-tags-label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-muted);
-  margin-right: 0.25rem;
+  margin-right: 0.2rem;
 }
 
 .quick-tag-chip {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-full);
-  padding: 0.35rem 0.85rem;
-  font-size: 0.82rem;
+  padding: 0.28rem 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
@@ -572,22 +556,22 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2.5rem;
+  gap: 2rem;
   flex-wrap: wrap;
-  padding-top: 0.5rem;
+  padding-top: 0.25rem;
 }
 
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.94rem;
+  gap: 0.5rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
 }
 
 .stat-item i {
   color: var(--primary);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
 }
 
 /* ==========================================================================
@@ -597,10 +581,10 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
-  margin: 1.5rem auto 2.5rem;
+  gap: 0.45rem;
+  margin: 1.25rem auto 2.25rem;
   flex-wrap: wrap;
-  padding: 0.4rem;
+  padding: 0.35rem;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-full);
@@ -609,18 +593,18 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 }
 
 .filter-tab-btn {
-  padding: 0.6rem 1.25rem;
+  padding: 0.55rem 1.15rem;
   border-radius: var(--radius-full);
   background: transparent;
   border: none;
   color: var(--text-secondary);
   font-family: var(--font-main);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.5rem;
   transition: all var(--transition-normal);
 }
 
@@ -632,102 +616,102 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 .filter-tab-btn.active {
   background: var(--primary);
   color: #ffffff;
-  box-shadow: 0 4px 14px var(--primary-glow);
+  box-shadow: 0 4px 12px var(--primary-glow);
 }
 
 /* ==========================================================================
-   Tools Grid & Distinct Color-Coded Tool Cards (Signature Smallpdf Style)
+   Tools Grid & High-Impact Smallpdf Style Cards
    ========================================================================== */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 4rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.35rem;
+  margin-bottom: 3.5rem;
 }
 
 .tool-card {
   position: relative;
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.85rem 1.6rem;
+  padding: 1.35rem 1.35rem;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   text-decoration: none;
   color: inherit;
-  transition: all var(--transition-slow);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
   overflow: hidden;
   box-shadow: var(--shadow-xs);
 }
 
-/* Signature Top Accent Line */
+/* Top Accent Stripe */
 .tool-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 3px;
   background: var(--card-accent, var(--primary));
-  opacity: 0;
-  transform: scaleX(0.4);
+  opacity: 0.85;
   transition: all var(--transition-normal);
 }
 
 .tool-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-5px);
   border-color: var(--card-accent, var(--primary));
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: 0 12px 28px -6px var(--card-shadow, rgba(0, 0, 0, 0.1));
   background: var(--bg-card-hover);
 }
 
 .tool-card:hover::before {
+  height: 4px;
   opacity: 1;
-  transform: scaleX(1);
 }
 
-/* Tool Icon Wrapper */
+/* Tool Icon Wrapper (Smallpdf Signature Solid Gradient Badge) */
 .tool-icon-wrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-md);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
-  margin-bottom: 1.35rem;
-  background-color: var(--card-icon-bg, var(--primary-light));
-  color: var(--card-accent, var(--primary));
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  font-size: 1.35rem;
+  margin-bottom: 0.9rem;
+  background: var(--card-gradient, linear-gradient(135deg, #ef4444, #6366f1)) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 14px var(--card-shadow, rgba(99, 102, 241, 0.28));
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
 }
 
 .tool-card:hover .tool-icon-wrapper {
   transform: scale(1.1) rotate(-3deg);
-  box-shadow: 0 8px 18px -4px var(--card-icon-bg, var(--primary-light));
+  box-shadow: 0 8px 20px var(--card-shadow, rgba(99, 102, 241, 0.38));
 }
 
 .tool-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.45rem;
   gap: 0.5rem;
 }
 
 .tool-title {
-  font-size: 1.28rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.015em;
 }
 
 .tool-badge {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 0.22rem 0.6rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-full);
   background: var(--primary-light);
   color: var(--primary);
@@ -750,10 +734,10 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 }
 
 .tool-desc {
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   color: var(--text-secondary);
-  line-height: 1.55;
-  margin-bottom: 1.4rem;
+  line-height: 1.5;
+  margin-bottom: 1.15rem;
   flex: 1;
 }
 
@@ -761,152 +745,179 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--card-accent, var(--primary));
-  padding-top: 0.75rem;
-  border-top: 1px dashed var(--border-color);
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border-color);
 }
 
 .tool-action-arrow {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: var(--bg-input);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
   transition: all var(--transition-normal);
 }
 
 .tool-card:hover .tool-action-arrow {
-  transform: translateX(4px);
+  transform: translateX(3px);
   background-color: var(--card-accent, var(--primary));
   color: #ffffff;
 }
 
 /* ==========================================================================
-   Tool Color Variations (Smallpdf Signature Color System)
+   Tool Color Variations (Smallpdf Signature Solid Gradient System)
    ========================================================================== */
 .tool-card[data-tool="word-to-pdf"] {
   --card-accent: #2563eb;
-  --card-icon-bg: rgba(37, 99, 235, 0.12);
+  --card-gradient: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  --card-shadow: rgba(37, 99, 235, 0.35);
 }
 
 .tool-card[data-tool="pdf-to-word"] {
   --card-accent: #1d4ed8;
-  --card-icon-bg: rgba(29, 78, 216, 0.12);
+  --card-gradient: linear-gradient(135deg, #1e40af, #2563eb);
+  --card-shadow: rgba(29, 78, 216, 0.35);
 }
 
-.tool-card[data-tool="excel-to-pdf"],
+.tool-card[data-tool="excel-to-pdf"] {
+  --card-accent: #10b981;
+  --card-gradient: linear-gradient(135deg, #047857, #10b981);
+  --card-shadow: rgba(16, 185, 129, 0.35);
+}
+
 .tool-card[data-tool="pdf-to-excel"] {
   --card-accent: #10b981;
-  --card-icon-bg: rgba(16, 185, 129, 0.12);
+  --card-gradient: linear-gradient(135deg, #059669, #34d399);
+  --card-shadow: rgba(16, 185, 129, 0.35);
 }
 
 .tool-card[data-tool="ppt-to-pdf"] {
   --card-accent: #e11d48;
-  --card-icon-bg: rgba(225, 29, 72, 0.12);
+  --card-gradient: linear-gradient(135deg, #be123c, #f43f5e);
+  --card-shadow: rgba(225, 29, 72, 0.35);
 }
 
 .tool-card[data-tool="merge"] {
   --card-accent: #ef4444;
-  --card-icon-bg: rgba(239, 68, 68, 0.12);
+  --card-gradient: linear-gradient(135deg, #ea580c, #ef4444);
+  --card-shadow: rgba(239, 68, 68, 0.35);
 }
 
 .tool-card[data-tool="split"] {
   --card-accent: #f59e0b;
-  --card-icon-bg: rgba(245, 158, 11, 0.12);
+  --card-gradient: linear-gradient(135deg, #d97706, #f59e0b);
+  --card-shadow: rgba(245, 158, 11, 0.35);
 }
 
 .tool-card[data-tool="organize"] {
   --card-accent: #8b5cf6;
-  --card-icon-bg: rgba(139, 92, 246, 0.12);
+  --card-gradient: linear-gradient(135deg, #7c3aed, #a855f7);
+  --card-shadow: rgba(139, 92, 246, 0.35);
 }
 
 .tool-card[data-tool="compress"] {
   --card-accent: #0d9488;
-  --card-icon-bg: rgba(13, 148, 136, 0.12);
+  --card-gradient: linear-gradient(135deg, #0f766e, #14b8a6);
+  --card-shadow: rgba(13, 148, 136, 0.35);
 }
 
 .tool-card[data-tool="pdf-to-img"] {
   --card-accent: #ec4899;
-  --card-icon-bg: rgba(236, 72, 153, 0.12);
+  --card-gradient: linear-gradient(135deg, #be185d, #ec4899);
+  --card-shadow: rgba(236, 72, 153, 0.35);
 }
 
 .tool-card[data-tool="img-to-pdf"] {
   --card-accent: #06b6d4;
-  --card-icon-bg: rgba(6, 182, 212, 0.12);
+  --card-gradient: linear-gradient(135deg, #0e7490, #06b6d4);
+  --card-shadow: rgba(6, 182, 212, 0.35);
 }
 
 .tool-card[data-tool="rotate"] {
   --card-accent: #6366f1;
-  --card-icon-bg: rgba(99, 102, 241, 0.12);
+  --card-gradient: linear-gradient(135deg, #4338ca, #6366f1);
+  --card-shadow: rgba(99, 102, 241, 0.35);
 }
 
 .tool-card[data-tool="watermark"] {
   --card-accent: #f43f5e;
-  --card-icon-bg: rgba(244, 63, 94, 0.12);
+  --card-gradient: linear-gradient(135deg, #e11d48, #fb7185);
+  --card-shadow: rgba(244, 63, 94, 0.35);
 }
 
 .tool-card[data-tool="page-number"] {
   --card-accent: #0ea5e9;
-  --card-icon-bg: rgba(14, 165, 233, 0.12);
+  --card-gradient: linear-gradient(135deg, #0369a1, #38bdf8);
+  --card-shadow: rgba(14, 165, 233, 0.35);
 }
 
 .tool-card[data-tool="protect"] {
   --card-accent: #dc2626;
-  --card-icon-bg: rgba(220, 38, 38, 0.12);
+  --card-gradient: linear-gradient(135deg, #991b1b, #ef4444);
+  --card-shadow: rgba(220, 38, 38, 0.35);
 }
 
 .tool-card[data-tool="unlock"] {
   --card-accent: #10b981;
-  --card-icon-bg: rgba(16, 185, 129, 0.12);
+  --card-gradient: linear-gradient(135deg, #065f46, #10b981);
+  --card-shadow: rgba(16, 185, 129, 0.35);
 }
 
 .tool-card[data-tool="sign"] {
   --card-accent: #4f46e5;
-  --card-icon-bg: rgba(79, 70, 229, 0.12);
+  --card-gradient: linear-gradient(135deg, #4c1d95, #7c3aed);
+  --card-shadow: rgba(79, 70, 229, 0.35);
 }
 
 .tool-card[data-tool="bg-remover"] {
   --card-accent: #a855f7;
-  --card-icon-bg: rgba(168, 85, 247, 0.12);
+  --card-gradient: linear-gradient(135deg, #701a75, #c026d3);
+  --card-shadow: rgba(168, 85, 247, 0.35);
 }
 
 .tool-card[data-tool="extract-text"] {
   --card-accent: #14b8a6;
-  --card-icon-bg: rgba(20, 184, 166, 0.12);
+  --card-gradient: linear-gradient(135deg, #115e59, #2dd4bf);
+  --card-shadow: rgba(20, 184, 166, 0.35);
 }
 
 .tool-card[data-tool="ocr-pdf"] {
   --card-accent: #0284c7;
-  --card-icon-bg: rgba(2, 132, 199, 0.12);
+  --card-gradient: linear-gradient(135deg, #075985, #0284c7);
+  --card-shadow: rgba(2, 132, 199, 0.35);
 }
 
 .tool-card[data-tool="redact"] {
   --card-accent: #dc2626;
-  --card-icon-bg: rgba(220, 38, 38, 0.12);
+  --card-gradient: linear-gradient(135deg, #881337, #dc2626);
+  --card-shadow: rgba(220, 38, 38, 0.35);
 }
 
 .tool-card[data-tool="metadata"] {
   --card-accent: #8b5cf6;
-  --card-icon-bg: rgba(139, 92, 246, 0.12);
+  --card-gradient: linear-gradient(135deg, #581c87, #8b5cf6);
+  --card-shadow: rgba(139, 92, 246, 0.35);
 }
 
 .tool-card[data-tool="grayscale"] {
   --card-accent: #64748b;
-  --card-icon-bg: rgba(100, 116, 139, 0.12);
+  --card-gradient: linear-gradient(135deg, #334155, #64748b);
+  --card-shadow: rgba(100, 116, 139, 0.35);
 }
 
 /* ==========================================================================
    "How It Works" 3-Step Section (Xodo & Smallpdf Style)
    ========================================================================== */
 .how-it-works-section {
-  margin: 4rem 0;
-  padding: 3.5rem 2rem;
+  margin: 3.5rem 0;
+  padding: 3rem 2rem;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-2xl);
@@ -915,9 +926,9 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 
 .steps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-top: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .step-card {
@@ -925,7 +936,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 2rem;
+  padding: 1.75rem;
   background: var(--bg-surface-subtle);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
@@ -940,47 +951,47 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 
 .step-badge {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
+  top: 1.25rem;
+  right: 1.25rem;
   font-family: var(--font-main);
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: var(--text-muted);
-  opacity: 0.5;
+  opacity: 0.45;
 }
 
 .step-icon {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   background: var(--primary-light);
   color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
-  margin-bottom: 1.25rem;
+  font-size: 1.35rem;
+  margin-bottom: 1.15rem;
 }
 
 .step-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
   color: var(--text-primary);
 }
 
 .step-desc {
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 /* ==========================================================================
    Features Section (Why Insight Tools?)
    ========================================================================== */
 .features-section {
-  margin: 4rem 0;
-  padding: 3.5rem 2rem;
+  margin: 3.5rem 0;
+  padding: 3rem 2rem;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-2xl);
@@ -989,48 +1000,48 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 
 .section-heading {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .section-pill {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--primary);
   background: var(--primary-light);
-  padding: 0.3rem 0.8rem;
+  padding: 0.28rem 0.75rem;
   border-radius: var(--radius-full);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
 }
 
 .section-title {
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.025em;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
 }
 
 .section-subtitle {
   color: var(--text-secondary);
-  font-size: 1.05rem;
-  max-width: 620px;
+  font-size: 1rem;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
 }
 
 .feature-box {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1.75rem;
+  gap: 0.85rem;
+  padding: 1.6rem;
   background: var(--bg-surface-subtle);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
@@ -1044,34 +1055,34 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 }
 
 .feature-icon {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   background: var(--primary-light);
   color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
 }
 
 .feature-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
 }
 
 .feature-desc {
   color: var(--text-secondary);
-  font-size: 0.94rem;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 /* ==========================================================================
    FAQ Section (Accordion Style - Smallpdf & PDFHouse Inspiration)
    ========================================================================== */
 .faq-section {
-  margin: 4rem 0;
-  padding: 3.5rem 2rem;
+  margin: 3.5rem 0;
+  padding: 3rem 2rem;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-2xl);
@@ -1079,11 +1090,11 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 }
 
 .faq-container {
-  max-width: 860px;
-  margin: 2.5rem auto 0;
+  max-width: 840px;
+  margin: 2rem auto 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .faq-item {
@@ -1102,12 +1113,12 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 
 .faq-question {
   width: 100%;
-  padding: 1.25rem 1.5rem;
+  padding: 1.15rem 1.4rem;
   background: transparent;
   border: none;
   color: var(--text-primary);
   font-family: var(--font-main);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   text-align: left;
   cursor: pointer;
@@ -1118,7 +1129,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 }
 
 .faq-toggle-icon {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
   transition: transform var(--transition-fast);
 }
@@ -1132,15 +1143,15 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
-  padding: 0 1.5rem;
+  padding: 0 1.4rem;
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.65;
+  font-size: 0.92rem;
+  line-height: 1.6;
 }
 
 .faq-item.open .faq-answer {
   max-height: 240px;
-  padding: 0 1.5rem 1.25rem;
+  padding: 0 1.4rem 1.15rem;
 }
 
 /* ==========================================================================
@@ -1149,7 +1160,7 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 .footer {
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-color);
-  padding: 4rem 1.5rem 2rem;
+  padding: 3.5rem 1.5rem 2rem;
   margin-top: auto;
 }
 
@@ -1158,36 +1169,36 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   margin: 0 auto;
   display: grid;
   grid-template-columns: 2fr repeat(3, 1fr);
-  gap: 3rem;
-  margin-bottom: 3rem;
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .footer-brand p {
   color: var(--text-secondary);
-  font-size: 0.92rem;
-  margin-top: 1rem;
-  max-width: 340px;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  margin-top: 0.85rem;
+  max-width: 320px;
+  line-height: 1.55;
 }
 
 .footer-privacy-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 1.25rem;
-  padding: 0.4rem 0.85rem;
+  margin-top: 1.15rem;
+  padding: 0.35rem 0.8rem;
   background: var(--bg-input);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-full);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
 }
 
 .footer-col h4 {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.15rem;
   color: var(--text-primary);
 }
 
@@ -1195,13 +1206,13 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.65rem;
 }
 
 .footer-col a {
   text-decoration: none;
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   transition: all var(--transition-fast);
 }
 
@@ -1214,12 +1225,12 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
 .footer-bottom {
   max-width: 1400px;
   margin: 0 auto;
-  padding-top: 2rem;
+  padding-top: 1.75rem;
   border-top: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
   flex-wrap: wrap;
   gap: 1rem;
@@ -1229,15 +1240,15 @@ h1, h2, h3, h4, h5, h6, .brand-text, .btn-select-files, .btn-execute-action, .bt
    Responsive Breakpoints
    ========================================================================== */
 @media (max-width: 1024px) {
-  .hero-title { font-size: 2.8rem; }
+  .hero-title { font-size: 2.4rem; }
   .tools-mega-menu { width: 620px; grid-template-columns: repeat(2, 1fr); }
-  .footer-container { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  .footer-container { grid-template-columns: 1fr 1fr; gap: 2rem; }
 }
 
 @media (max-width: 768px) {
-  .hero-title { font-size: 2.2rem; }
-  .hero-subtitle { font-size: 1.05rem; }
-  .hero-stats { gap: 1.5rem; }
+  .hero-title { font-size: 2rem; }
+  .hero-subtitle { font-size: 0.98rem; }
+  .hero-stats { gap: 1.25rem; }
   .tools-mega-menu { display: none; }
   .tools-filter-bar { border-radius: var(--radius-lg); }
   .footer-container { grid-template-columns: 1fr; }

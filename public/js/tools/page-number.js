@@ -22,6 +22,7 @@ window.Tools.pageNumber = {
           <option value="top-right">Top Right (Header)</option>
           <option value="top-center">Top Center (Header)</option>
         </select>
+        <input type="radio" name="pageNumberPosition" value="bottom-center" checked style="display:none;">
       </div>
       <div class="form-group">
         <label class="form-label">Numbering Format</label>
