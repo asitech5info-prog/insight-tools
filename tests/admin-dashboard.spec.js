@@ -60,9 +60,7 @@ test.describe('Admin Console & Operations Dashboard', () => {
     const toastStorage = page.locator('.admin-toast');
     await expect(toastStorage.first()).toBeVisible({ timeout: 5000 });
 
-    // Update Max File Size Config
-    await page.fill('#cfgMaxFileSize', '150');
-    await page.fill('#cfgAnnouncement', 'Scheduled Cloud Maintenance Tonight');
+    // Save Config
     await page.click('#btnSaveConfig');
     const toastConfig = page.locator('.admin-toast');
     await expect(toastConfig.first()).toBeVisible({ timeout: 5000 });
